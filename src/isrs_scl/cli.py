@@ -108,10 +108,13 @@ def run_from_args(args: argparse.Namespace) -> int:
         print(f"Run directory: {summary['run_directory']}")
         print(f"Manifest: {summary['manifest_path']}")
         print(f"Validation status: {summary['validation_status_path']}")
-        if summary["failed_publication_checks"]:
-            print("Failed checks: " + ", ".join(summary["failed_publication_checks"]))
-        if resolve_mode(args) != "publication":
-            print("NOTICE: smoke/debug output is not journal evidence.")
+        if resolve_mode(args) == "publication" and summary["failed_publication_checks"]:
+            print("Failed publication checks: " + ", ".join(summary["failed_publication_checks"]))
+        elif resolve_mode(args) != "publication":
+            gaps = summary.get("publication_gaps_if_submitted", [])
+            if gaps:
+                print("Publication gaps if submitted now: " + ", ".join(gaps))
+            print("SMOKE/DEBUG COMPLETED: pipeline plumbing passed, but this output is not journal evidence.")
         return EXIT_OK if summary["publication_ready_numerical_claims"] or resolve_mode(args) != "publication" else EXIT_VALIDATION
     except (ConfigError, FileNotFoundError, yaml.YAMLError, ValueError) as exc:
         print(f"Configuration failure: {exc}", file=sys.stderr)

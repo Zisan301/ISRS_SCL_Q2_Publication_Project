@@ -1,0 +1,22 @@
+{
+  "bandwidth_thz": 2.0,
+  "calibration_status": "UNVALIDATED_DEFAULTS",
+  "channels": 41,
+  "failed_publication_checks": [
+    "calibrated_parameters",
+    "per_band_target_usability",
+    "optimizer_candidate_accepted",
+    "independent_external_validation",
+    "robust_adaptive_gain"
+  ],
+  "gross_line_rate_tbps": 10.496,
+  "manifest_path": "E:\\VS Code\\ISRS_SCL_Q2_Publication_Project\\runs\\q2-smoke-005\\metadata\\RUN_MANIFEST.json",
+  "net_line_rate_tbps": 8.3968,
+  "optimizer_candidate_accepted": false,
+  "publication_ready_numerical_claims": false,
+  "run_directory": "E:\\VS Code\\ISRS_SCL_Q2_Publication_Project\\runs\\q2-smoke-005",
+  "run_id": "q2-smoke-005",
+  "run_mode": "smoke",
+  "study_title": "Validated ISRS-Aware GSNR Modeling and Constrained Launch-Profile Optimization for Ultra-Wideband S+C+L Coherent Transmission",
+  "validation_status_path": "E:\\VS Code\\ISRS_SCL_Q2_Publication_Project\\runs\\q2-smoke-005\\metadata\\VALIDATION_STATUS.json"
+}

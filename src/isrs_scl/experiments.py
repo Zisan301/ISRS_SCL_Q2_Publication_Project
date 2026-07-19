@@ -424,12 +424,12 @@ def run_publication_study(config_path: str | Path, grid_mode: str | None = None,
             flush=True,
         )
 
-    def external_stage() -> Any:
+    def external_stage(external: pd.DataFrame | None = None) -> Any:
         nonlocal external_requirements
-        external = load_external_validation(cfg["validation"]["external_reference_csv"])
+        reference = external if external is not None else load_external_validation(cfg["validation"]["external_reference_csv"])
         result = compare_external_validation(
             channel_sweep,
-            external,
+            reference,
             wavelength_tolerance_nm=float(cfg["validation"]["external_max_wavelength_error_nm"]),
             thresholds=_external_thresholds(),
             allow_interpolation=bool(cfg["validation"]["external_allow_interpolation"]),
@@ -446,9 +446,11 @@ def run_publication_study(config_path: str | Path, grid_mode: str | None = None,
         external_result = _stage(ctx, "external_validation", external_stage)
     else:
         try:
-            external_result = _stage(ctx, "external_validation", external_stage)
+            external_table = load_external_validation(cfg["validation"]["external_reference_csv"])
         except (FileNotFoundError, ValueError) as exc:
             _write_external_skip(str(exc))
+        else:
+            external_result = _stage(ctx, "external_validation", lambda: external_stage(external_table))
 
     uncertainty = None
     if bool(cfg["uncertainty"]["enabled"]):
@@ -468,7 +470,27 @@ def run_publication_study(config_path: str | Path, grid_mode: str | None = None,
     gate = evaluate_publication_gate(cfg, grid_bandwidth_thz=ctx.grid.bandwidth_hz / 1e12, convergence_passed=convergence_passed, raman_validation_passed=raman_passed, strategy_summary=strategy_summary, channel_sweep=channel_sweep, waveform_metrics=waveform, external_validation_summary=external_requirements, uncertainty_summary=None if uncertainty is None else uncertainty.summary, uncertainty_samples=None if uncertainty is None else uncertainty.samples, uncertainty_success_fraction=None if uncertainty is None else uncertainty.successful_fraction, optimizer_accepted=optimization.best_result.improved, output_files=required_outputs, manifest_path=manifest_path, run_root=paths.root, optimizer_multiseed=optimization.run_summary, paired_gains=None if uncertainty is None else uncertainty.paired_gains, robust_training_hash=optimization.best_result.robust_training_hash, holdout_hash=None if uncertainty is None else uncertainty.batch_hash)
     write_publication_gate(paths.metadata / "VALIDATION_STATUS.json", gate); finalize_manifest(ctx.manifest, paths.root, manifest_path)
     line_rate = line_rate_capacity(ctx.grid.n_channels, float(cfg["modulation"]["symbol_rate_gbaud"]) * 1e9, int(cfg["modulation"]["bits_per_symbol_per_pol"]), float(cfg["fec"]["overhead_fraction"]))
-    summary = {"study_title": cfg["metadata"]["study_title"], "run_id": run_id, "run_directory": str(paths.root), "run_mode": cfg["run"]["mode"], "calibration_status": cfg["metadata"]["calibration_status"], "channels": ctx.grid.n_channels, "bandwidth_thz": ctx.grid.bandwidth_hz / 1e12, "gross_line_rate_tbps": line_rate.gross_tbps, "net_line_rate_tbps": line_rate.net_tbps, "optimizer_candidate_accepted": optimization.best_result.improved, "publication_ready_numerical_claims": gate.passed, "failed_publication_checks": [check.name for check in gate.failures], "manifest_path": str(manifest_path), "validation_status_path": str(paths.metadata / "VALIDATION_STATUS.json")}
+    publication_gaps = [check.name for check in gate.failures]
+    summary = {
+        "study_title": cfg["metadata"]["study_title"],
+        "run_id": run_id,
+        "run_directory": str(paths.root),
+        "run_mode": cfg["run"]["mode"],
+        "calibration_status": cfg["metadata"]["calibration_status"],
+        "channels": ctx.grid.n_channels,
+        "bandwidth_thz": ctx.grid.bandwidth_hz / 1e12,
+        "gross_line_rate_tbps": line_rate.gross_tbps,
+        "net_line_rate_tbps": line_rate.net_tbps,
+        "optimizer_candidate_accepted": optimization.best_result.improved,
+        "publication_ready_numerical_claims": gate.passed if cfg["run"]["mode"] == "publication" else False,
+        "publication_gate_evaluated": True,
+        "publication_gaps_if_submitted": publication_gaps,
+        "failed_publication_checks": publication_gaps if cfg["run"]["mode"] == "publication" else [],
+        "smoke_run_completed": cfg["run"]["mode"] == "smoke",
+        "debug_run_completed": cfg["run"]["mode"] == "debug",
+        "manifest_path": str(manifest_path),
+        "validation_status_path": str(paths.metadata / "VALIDATION_STATUS.json"),
+    }
     atomic_write_json(paths.metadata / "summary.json", summary); finalize_manifest(ctx.manifest, paths.root, manifest_path)
-    if strict and not gate.passed: raise RuntimeError("Strict publication gate failed: " + ", ".join(summary["failed_publication_checks"]))
+    if strict and not gate.passed: raise RuntimeError("Strict publication gate failed: " + ", ".join(publication_gaps))
     return summary
