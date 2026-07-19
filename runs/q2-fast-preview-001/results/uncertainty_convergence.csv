@@ -1,0 +1,4 @@
+samples,strategy,ci95_low,median,ci95_high
+4,flat,21.504,21.504,21.504
+4,fixed,21.504,21.504,21.504
+4,adaptive,21.504,21.504,21.504

@@ -1,0 +1,4 @@
+strategy,metric,samples,mean,std,ci95_low,median,ci95_high,cvar_lower,worst_case
+flat,thresholded_net_capacity_tbps,4,21.504,0.0,21.504,21.504,21.504,21.504,21.504
+fixed,thresholded_net_capacity_tbps,4,21.504,0.0,21.504,21.504,21.504,21.504,21.504
+adaptive,thresholded_net_capacity_tbps,4,21.504,0.0,21.504,21.504,21.504,21.504,21.504

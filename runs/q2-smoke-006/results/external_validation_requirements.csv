@@ -1,2 +1,0 @@
-requirement,passed,value,threshold,reason,run_mode
-external_validation_data,False,0.0,1.0,"External validation missing columns: ['configuration_hash', 'date', 'independent', 'metric_unit', 'provenance_reference', 'tool_version']",smoke

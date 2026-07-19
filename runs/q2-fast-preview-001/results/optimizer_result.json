@@ -1,0 +1,24 @@
+{
+  "acceptance_reason": "band_S+4.0_L-2.0; accepted constraints were non-regressive, but no material improvement over the baseline was detected.",
+  "accepted": false,
+  "feasibility": {
+    "air_not_worse": true,
+    "band_feasible": true,
+    "capacity_not_worse": true,
+    "nominal_gain": true,
+    "robust_ci": true
+  },
+  "initial_objective": -1.2266940565881193,
+  "optimized_objective": -1.1385417676051799,
+  "robust_summary": {
+    "ci95_high": 0.0,
+    "ci95_low": 0.0,
+    "cvar_lower": 0.0,
+    "mean": 0.0,
+    "median": 0.0,
+    "probability_positive": 0.0,
+    "samples": 4.0,
+    "worst_case": 0.0
+  },
+  "robust_training_hash": "fa1cba3faeb4f36349c0c7c9c87b7a7325ca9d24aaa68f9e04b6cbd9d300e8c8"
+}

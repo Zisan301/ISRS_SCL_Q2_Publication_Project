@@ -1,0 +1,1338 @@
+{
+  "artifact_count": 111,
+  "artifacts": [
+    {
+      "bytes": 15159,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/01_raman_validation.pdf",
+      "role": "figures",
+      "sha256": "3a224739f991511272ccde44fbdef6db79f9b8d415e14a0566de2d42c8e38e59"
+    },
+    {
+      "bytes": 51497,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/01_raman_validation.png",
+      "role": "figures",
+      "sha256": "1833acdec751a9879272ffc63cb2601b0da82ebb89268ec4d36d7ff2dc3bab44"
+    },
+    {
+      "bytes": 3724,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/01_raman_validation_data.csv",
+      "role": "figures",
+      "sha256": "bde69ee5698e505e5acd2efeafb6a5c6fc17b4c14d5f6b60e1a7d580fc84e164"
+    },
+    {
+      "bytes": 88,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/01_raman_validation_metadata.json",
+      "role": "figures",
+      "sha256": "7e2532a7fdbb0c34a964e69c72625bb56e245ecdef5a58fe3abfe2eca4eefa2c"
+    },
+    {
+      "bytes": 16928,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/02_isrs_spectral_tilt.pdf",
+      "role": "figures",
+      "sha256": "63111052a75dca4c9c8f89554c1e6cf1f63befa830803973370f731840991a1a"
+    },
+    {
+      "bytes": 51291,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/02_isrs_spectral_tilt.png",
+      "role": "figures",
+      "sha256": "9c1f4efc046533d53fbf724ba7dabc70367ae2301a066bc65889739ed39fb081"
+    },
+    {
+      "bytes": 10586,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/02_isrs_spectral_tilt_data.csv",
+      "role": "figures",
+      "sha256": "2c0e92975223846e76c30916f862fdc88bed1c55c45fe8a51a1f37bc75057606"
+    },
+    {
+      "bytes": 88,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/02_isrs_spectral_tilt_metadata.json",
+      "role": "figures",
+      "sha256": "7e2532a7fdbb0c34a964e69c72625bb56e245ecdef5a58fe3abfe2eca4eefa2c"
+    },
+    {
+      "bytes": 16126,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/03_launch_profiles.pdf",
+      "role": "figures",
+      "sha256": "acac014598327e2070c3a7b4c955375f14e85494e3aa11aea750c5304f478907"
+    },
+    {
+      "bytes": 44836,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/03_launch_profiles.png",
+      "role": "figures",
+      "sha256": "d373c8f103708f2b539f3992d3447ebd76053bfb0d42ab663ad6019edb5418a4"
+    },
+    {
+      "bytes": 19594,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/03_launch_profiles_data.csv",
+      "role": "figures",
+      "sha256": "355d269cf9241add7f2d380b11b7c2a2d58c2e4e6950b236c5359df7d41d3867"
+    },
+    {
+      "bytes": 88,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/03_launch_profiles_metadata.json",
+      "role": "figures",
+      "sha256": "7e2532a7fdbb0c34a964e69c72625bb56e245ecdef5a58fe3abfe2eca4eefa2c"
+    },
+    {
+      "bytes": 16110,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/04_gsnr_vs_wavelength.pdf",
+      "role": "figures",
+      "sha256": "e5d7c9d641f6b18538335e6b86084e9f92cd0b3e613b8164810caa7f177a0742"
+    },
+    {
+      "bytes": 55409,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/04_gsnr_vs_wavelength.png",
+      "role": "figures",
+      "sha256": "b05845cb8764cf7cf0a57c4595a95b12a9248ecad6b6f5f4445f2c4cd0b56147"
+    },
+    {
+      "bytes": 139715,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/04_gsnr_vs_wavelength_data.csv",
+      "role": "figures",
+      "sha256": "7a69be0c5d15c0663a25a7ed1a35bb7a7294f4d94da14f24bad491a2793be0d1"
+    },
+    {
+      "bytes": 88,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/04_gsnr_vs_wavelength_metadata.json",
+      "role": "figures",
+      "sha256": "7e2532a7fdbb0c34a964e69c72625bb56e245ecdef5a58fe3abfe2eca4eefa2c"
+    },
+    {
+      "bytes": 17007,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/05_gsnr_distance_heatmap.pdf",
+      "role": "figures",
+      "sha256": "a693604aa321382976ae19b93c5aea97931655fccb3101cf11e3b4e8007fc3d6"
+    },
+    {
+      "bytes": 32388,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/05_gsnr_distance_heatmap.png",
+      "role": "figures",
+      "sha256": "2c9f4f3da10b490a19f216f3f0f156e0d7027fcfe3615c9885138bb23537513f"
+    },
+    {
+      "bytes": 135327,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/05_gsnr_distance_heatmap_data.csv",
+      "role": "figures",
+      "sha256": "16ee85e9ac0b9c62e14beb3b42cfa0bc68a1501277f447d6b99c530644033c75"
+    },
+    {
+      "bytes": 88,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/05_gsnr_distance_heatmap_metadata.json",
+      "role": "figures",
+      "sha256": "7e2532a7fdbb0c34a964e69c72625bb56e245ecdef5a58fe3abfe2eca4eefa2c"
+    },
+    {
+      "bytes": 12590,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/06_waveform_metrics.pdf",
+      "role": "figures",
+      "sha256": "e897a7845064e7b7d4a3a40097666fb1d309650e8dc5cd5efb4a74d201c8d776"
+    },
+    {
+      "bytes": 17601,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/06_waveform_metrics.png",
+      "role": "figures",
+      "sha256": "5a82a04a963d28a58e9e34ade5418fa9bfe9dd5357404a89080ba1846fb61966"
+    },
+    {
+      "bytes": 1855,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/06_waveform_metrics_data.csv",
+      "role": "figures",
+      "sha256": "324626ba1b745dc5d8f485b9a931004a28f2ed44df1973b41138f3df447b5de7"
+    },
+    {
+      "bytes": 88,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/06_waveform_metrics_metadata.json",
+      "role": "figures",
+      "sha256": "7e2532a7fdbb0c34a964e69c72625bb56e245ecdef5a58fe3abfe2eca4eefa2c"
+    },
+    {
+      "bytes": 12979,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/07_waveform_power_consistency.pdf",
+      "role": "figures",
+      "sha256": "6f3bcfc687fcaf258ef6fdc9df118d255e091fd3a57d3467156afd14895b5086"
+    },
+    {
+      "bytes": 27837,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/07_waveform_power_consistency.png",
+      "role": "figures",
+      "sha256": "f22a7c1a3475f1fd6447b1a9eef88b1bdb20a1c3c70887be8b96c71859883576"
+    },
+    {
+      "bytes": 1855,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/07_waveform_power_consistency_data.csv",
+      "role": "figures",
+      "sha256": "324626ba1b745dc5d8f485b9a931004a28f2ed44df1973b41138f3df447b5de7"
+    },
+    {
+      "bytes": 88,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/07_waveform_power_consistency_metadata.json",
+      "role": "figures",
+      "sha256": "7e2532a7fdbb0c34a964e69c72625bb56e245ecdef5a58fe3abfe2eca4eefa2c"
+    },
+    {
+      "bytes": 15483,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/08_capacity_reach.pdf",
+      "role": "figures",
+      "sha256": "e6c61f3a6c23818f5479440de97b330d5cbf8344d8848f3cb6ec3a87f304dedb"
+    },
+    {
+      "bytes": 31053,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/08_capacity_reach.png",
+      "role": "figures",
+      "sha256": "badf796bdb27643b5362db14ea871e032ea54ada24229ed5076cc0f278474809"
+    },
+    {
+      "bytes": 1727,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/08_capacity_reach_data.csv",
+      "role": "figures",
+      "sha256": "280ba4015f9ffbc0879d6dac69c27fc5dbce11a1ca6b46adb1478a5049e9efb9"
+    },
+    {
+      "bytes": 88,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/08_capacity_reach_metadata.json",
+      "role": "figures",
+      "sha256": "7e2532a7fdbb0c34a964e69c72625bb56e245ecdef5a58fe3abfe2eca4eefa2c"
+    },
+    {
+      "bytes": 11833,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/09_optimizer_convergence.pdf",
+      "role": "figures",
+      "sha256": "ed2b8178a1338b6d60f8e71c405720792ea9dbad081ad4385e74430083c62888"
+    },
+    {
+      "bytes": 47408,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/09_optimizer_convergence.png",
+      "role": "figures",
+      "sha256": "53c8e17f0684943fa3bfaffcb409659e1890d40aebe85c42e822d7d8be70d050"
+    },
+    {
+      "bytes": 2344,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/09_optimizer_convergence_data.csv",
+      "role": "figures",
+      "sha256": "a8480e1555ec7bdb33ecd27586e7400140abb99003c2c08929d44fce97c25d4a"
+    },
+    {
+      "bytes": 88,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/09_optimizer_convergence_metadata.json",
+      "role": "figures",
+      "sha256": "7e2532a7fdbb0c34a964e69c72625bb56e245ecdef5a58fe3abfe2eca4eefa2c"
+    },
+    {
+      "bytes": 11379,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/10_uncertainty_intervals.pdf",
+      "role": "figures",
+      "sha256": "4d79f1c5ae801ccb705011e1b0c8926c82f4ac3432d9c476650f7481d41642f3"
+    },
+    {
+      "bytes": 17020,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/10_uncertainty_intervals.png",
+      "role": "figures",
+      "sha256": "a3a5706efffed92a7439099e8225c6ba39e5ce55f77d45d1e2a2d9ca2eb48935"
+    },
+    {
+      "bytes": 339,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/10_uncertainty_intervals_data.csv",
+      "role": "figures",
+      "sha256": "9eb9796203551a8c43b3451b18375ccdbb004e4b87d6fcfe0cd07bc3beaf7aab"
+    },
+    {
+      "bytes": 88,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/10_uncertainty_intervals_metadata.json",
+      "role": "figures",
+      "sha256": "7e2532a7fdbb0c34a964e69c72625bb56e245ecdef5a58fe3abfe2eca4eefa2c"
+    },
+    {
+      "bytes": 11074,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/11_global_sensitivity.pdf",
+      "role": "figures",
+      "sha256": "00a35aa13ec9466d238f053545aaae91220a2412e29168ff6a0fef9c6baddfd8"
+    },
+    {
+      "bytes": 13618,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/11_global_sensitivity.png",
+      "role": "figures",
+      "sha256": "bbca0d69358462d67d34461eb5cde6ebef2eda4fea7ae776e4396a9e1bdc35ee"
+    },
+    {
+      "bytes": 1635,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/11_global_sensitivity_data.csv",
+      "role": "figures",
+      "sha256": "a50c300ea896004cca0417b0c4fdfc6ae21506589184ff52068b5e264ddc4158"
+    },
+    {
+      "bytes": 88,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/11_global_sensitivity_metadata.json",
+      "role": "figures",
+      "sha256": "7e2532a7fdbb0c34a964e69c72625bb56e245ecdef5a58fe3abfe2eca4eefa2c"
+    },
+    {
+      "bytes": 12017,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/13_paired_robust_gain.pdf",
+      "role": "figures",
+      "sha256": "d882a0ef5716c94182dc4c69ac8306476a90eff6d773c67e392569af1a9b39d1"
+    },
+    {
+      "bytes": 17300,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/13_paired_robust_gain.png",
+      "role": "figures",
+      "sha256": "72908a8a956e004b4bd3a88da7f7f473b2c88ba5ad88e7706f188326a039d2fa"
+    },
+    {
+      "bytes": 192,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/13_paired_robust_gain_data.csv",
+      "role": "figures",
+      "sha256": "b81172d6770091743af9aae38584b982b71df72b743dc9d68448ee894a1bc5ff"
+    },
+    {
+      "bytes": 88,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/13_paired_robust_gain_metadata.json",
+      "role": "figures",
+      "sha256": "7e2532a7fdbb0c34a964e69c72625bb56e245ecdef5a58fe3abfe2eca4eefa2c"
+    },
+    {
+      "bytes": 45599,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/waveform_C_below_threshold.pdf",
+      "role": "figures",
+      "sha256": "03a3158bacb829d089e6ffb503787ee919b6894d3bf745cf904c9e95fc42e671"
+    },
+    {
+      "bytes": 79651,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/waveform_C_below_threshold.png",
+      "role": "figures",
+      "sha256": "7421bc2e77e5a471f3208f18c06a9a33c1e7d0c3dfd752d6916626874bc60778"
+    },
+    {
+      "bytes": 161576,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/waveform_C_below_threshold_data.csv",
+      "role": "figures",
+      "sha256": "9e10068662c6393f485a02b5481b6003b0fda86f6fffe4ecf45fdcb90fb83619"
+    },
+    {
+      "bytes": 52,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/waveform_C_below_threshold_metadata.json",
+      "role": "figures",
+      "sha256": "1583d079c5639e51635aed8bff69f4c93994517bfb9632604d2fc51b15f12c24"
+    },
+    {
+      "bytes": 45830,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/waveform_C_high_margin.pdf",
+      "role": "figures",
+      "sha256": "e0ad431ab120fd84e227ba573fe0a8216d80f2808ce480e0e7badffb2f1695ba"
+    },
+    {
+      "bytes": 78068,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/waveform_C_high_margin.png",
+      "role": "figures",
+      "sha256": "284657c72641011e9a9eb9b49941ab2e4699ee813850f2e8705d02eafc717b0b"
+    },
+    {
+      "bytes": 161489,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/waveform_C_high_margin_data.csv",
+      "role": "figures",
+      "sha256": "6b691b0394f32841a888ad17140b621205712b25756e57103841216741be0a85"
+    },
+    {
+      "bytes": 52,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/waveform_C_high_margin_metadata.json",
+      "role": "figures",
+      "sha256": "1583d079c5639e51635aed8bff69f4c93994517bfb9632604d2fc51b15f12c24"
+    },
+    {
+      "bytes": 45399,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/waveform_C_near_threshold.pdf",
+      "role": "figures",
+      "sha256": "3cc16adfdfd7e97b45fcb42d4a383e8f0e3c36651e4e3f400dadd777684ab766"
+    },
+    {
+      "bytes": 78502,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/waveform_C_near_threshold.png",
+      "role": "figures",
+      "sha256": "9cbe205ecb24ba2c0714c84edfce55d17ad90797b463701121db98109bb2e46f"
+    },
+    {
+      "bytes": 161586,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/waveform_C_near_threshold_data.csv",
+      "role": "figures",
+      "sha256": "f655b74d9bf450209a14489b9c0b6e6f592ae19871224c5c84211abaadebeeea"
+    },
+    {
+      "bytes": 52,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/waveform_C_near_threshold_metadata.json",
+      "role": "figures",
+      "sha256": "1583d079c5639e51635aed8bff69f4c93994517bfb9632604d2fc51b15f12c24"
+    },
+    {
+      "bytes": 45562,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/waveform_L_below_threshold.pdf",
+      "role": "figures",
+      "sha256": "e8c0663dd16a3cdfbaaf5d5d57272ba92e60be2d40ea97c4e7ba83033f7ee944"
+    },
+    {
+      "bytes": 84467,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/waveform_L_below_threshold.png",
+      "role": "figures",
+      "sha256": "c7f13051ade57c3c0ed0e91c70976bdc3b9969bb0f280ec6586559bcb44594d9"
+    },
+    {
+      "bytes": 161632,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/waveform_L_below_threshold_data.csv",
+      "role": "figures",
+      "sha256": "1dffa57d88737570952051cadc1fa87f91f8b453bdb84dd50c3f5430dc92bb2b"
+    },
+    {
+      "bytes": 52,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/waveform_L_below_threshold_metadata.json",
+      "role": "figures",
+      "sha256": "1583d079c5639e51635aed8bff69f4c93994517bfb9632604d2fc51b15f12c24"
+    },
+    {
+      "bytes": 45779,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/waveform_L_high_margin.pdf",
+      "role": "figures",
+      "sha256": "a96b10e125ac7bb14e0107e560c0c3febbc22b7a6b14d78fa3b35ceaa56d6ab8"
+    },
+    {
+      "bytes": 76050,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/waveform_L_high_margin.png",
+      "role": "figures",
+      "sha256": "9fea8a3e0b826933848797ac15538221097ab6955c7d6871d05c9eef2291e3bb"
+    },
+    {
+      "bytes": 161697,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/waveform_L_high_margin_data.csv",
+      "role": "figures",
+      "sha256": "87b3b6ace9b08320a29192605d8920ada2898ee51953a492255cc8177883d433"
+    },
+    {
+      "bytes": 52,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/waveform_L_high_margin_metadata.json",
+      "role": "figures",
+      "sha256": "1583d079c5639e51635aed8bff69f4c93994517bfb9632604d2fc51b15f12c24"
+    },
+    {
+      "bytes": 45122,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/waveform_L_near_threshold.pdf",
+      "role": "figures",
+      "sha256": "200565f890d53e1dd5157df296c48edb761ee40b7b24c44b362b5403b3c43068"
+    },
+    {
+      "bytes": 84694,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/waveform_L_near_threshold.png",
+      "role": "figures",
+      "sha256": "bf88c56a8081070fcb7f7833b619a9630d7ce6f2e9615ab104562424b7263d74"
+    },
+    {
+      "bytes": 161599,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/waveform_L_near_threshold_data.csv",
+      "role": "figures",
+      "sha256": "883f11744332b4f2dd2192be9e80f666b1f3b6e579de7f0ba5ee794520e39acc"
+    },
+    {
+      "bytes": 52,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/waveform_L_near_threshold_metadata.json",
+      "role": "figures",
+      "sha256": "1583d079c5639e51635aed8bff69f4c93994517bfb9632604d2fc51b15f12c24"
+    },
+    {
+      "bytes": 45701,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/waveform_S_below_threshold.pdf",
+      "role": "figures",
+      "sha256": "bb347ed01f288e387274a5c5eff12d6772e4ca7b35d9a52442ba82d37566087d"
+    },
+    {
+      "bytes": 96653,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/waveform_S_below_threshold.png",
+      "role": "figures",
+      "sha256": "630693cb9bba45ab6730ba0a19062c1f7e7d39491bdf1db0de460638b3737ecb"
+    },
+    {
+      "bytes": 161626,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/waveform_S_below_threshold_data.csv",
+      "role": "figures",
+      "sha256": "8bb439706d3cc66ad3ac576d6e6c1681bfc4070bb799f0d481ef8c538e183e89"
+    },
+    {
+      "bytes": 52,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/waveform_S_below_threshold_metadata.json",
+      "role": "figures",
+      "sha256": "1583d079c5639e51635aed8bff69f4c93994517bfb9632604d2fc51b15f12c24"
+    },
+    {
+      "bytes": 45266,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/waveform_S_high_margin.pdf",
+      "role": "figures",
+      "sha256": "a49de8a4299d912a2e67c969fb5fd87ae2bb683c4500033c7fe11947130146cd"
+    },
+    {
+      "bytes": 83231,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/waveform_S_high_margin.png",
+      "role": "figures",
+      "sha256": "f94b8cc41d9e0acace3318bd6fab4ee504e560ef7ac363a4eb73f310ce7005a6"
+    },
+    {
+      "bytes": 161568,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/waveform_S_high_margin_data.csv",
+      "role": "figures",
+      "sha256": "f582374f0a752e875b5b57e4d1aa733a0b0ae926da0d21b3d07b86a4e46658de"
+    },
+    {
+      "bytes": 52,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/waveform_S_high_margin_metadata.json",
+      "role": "figures",
+      "sha256": "1583d079c5639e51635aed8bff69f4c93994517bfb9632604d2fc51b15f12c24"
+    },
+    {
+      "bytes": 45172,
+      "extension": ".pdf",
+      "mime_type": "application/pdf",
+      "path": "figures/waveform_S_near_threshold.pdf",
+      "role": "figures",
+      "sha256": "56eb20940101aa0dc69a547f8e2b14c0b8ae01f780dec9db7c61bf83c692bb8a"
+    },
+    {
+      "bytes": 95963,
+      "extension": ".png",
+      "mime_type": "image/png",
+      "path": "figures/waveform_S_near_threshold.png",
+      "role": "figures",
+      "sha256": "571c7e8f54ce4d3c6328a4b0824ddf44889b9e2a161d3d3ccac0c4ac0d6280a7"
+    },
+    {
+      "bytes": 161697,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "figures/waveform_S_near_threshold_data.csv",
+      "role": "figures",
+      "sha256": "7a138e63b45f29c6ef5a1b17e79d5b842ea78f2eb102a9ebe89242d1d0cee9bc"
+    },
+    {
+      "bytes": 52,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "figures/waveform_S_near_threshold_metadata.json",
+      "role": "figures",
+      "sha256": "1583d079c5639e51635aed8bff69f4c93994517bfb9632604d2fc51b15f12c24"
+    },
+    {
+      "bytes": 7135,
+      "extension": ".yaml",
+      "mime_type": "application/octet-stream",
+      "path": "metadata/resolved_config.yaml",
+      "role": "metadata",
+      "sha256": "65d6c8b609ee361256721706762068b77d2718bec8d4f669a89e206d6b486089"
+    },
+    {
+      "bytes": 11200,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "metadata/RUN_MANIFEST.initial.json",
+      "role": "metadata",
+      "sha256": "3ac1220cf037772cde48c6b57fc264923f0e571861cc11e6bf6f4e267229369a"
+    },
+    {
+      "bytes": 1067,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "metadata/summary.json",
+      "role": "metadata",
+      "sha256": "766e5b8843a7c552d4cdb5c1b95b0bc2deab182a098e44f37b66c4f2a0d6c414"
+    },
+    {
+      "bytes": 4487,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "metadata/VALIDATION_STATUS.json",
+      "role": "metadata",
+      "sha256": "749892e1098777070edda6958db14f71e425e2f62b44cb4c15a729a094358fdd"
+    },
+    {
+      "bytes": 5333,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/b2b_calibration.csv",
+      "role": "results",
+      "sha256": "bf407b3fa59a31a8d90280c67d88d433fb3070ed69088234347dc54c2f688c10"
+    },
+    {
+      "bytes": 17584,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/b2b_calibration_repeats.csv",
+      "role": "results",
+      "sha256": "0afd638941a4ac524abe25b8c21f44e023ecc14af6e91dad1dd795cdf3708675"
+    },
+    {
+      "bytes": 2749,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/band_summary.csv",
+      "role": "results",
+      "sha256": "22be30f92dc999bc8d552ff7dd7d3b189718a00658440d61e6e94eca3ae4c33e"
+    },
+    {
+      "bytes": 6629,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/channel_grid.csv",
+      "role": "results",
+      "sha256": "332981dab25c91a0d9ad6a664c4eed3ad42c2a7efef8519e3bc03bb1f0ad27e9"
+    },
+    {
+      "bytes": 405762,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/channel_performance.csv",
+      "role": "results",
+      "sha256": "d05dd35dc1c69359fba135e3e1ec7ce1bd762aee2a56c196a09311f1469f1c16"
+    },
+    {
+      "bytes": 2,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/external_validation_comparisons.csv",
+      "role": "results",
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "bytes": 238,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/external_validation_requirements.csv",
+      "role": "results",
+      "sha256": "0e487838719f06c65c3b49d5c32df071c66242eb0c413d53959ad6ca4b203e2b"
+    },
+    {
+      "bytes": 2,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/external_validation_summary.csv",
+      "role": "results",
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "bytes": 19594,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/launch_profiles.csv",
+      "role": "results",
+      "sha256": "355d269cf9241add7f2d380b11b7c2a2d58c2e4e6950b236c5359df7d41d3867"
+    },
+    {
+      "bytes": 329,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "results/optimizer_confidence.json",
+      "role": "results",
+      "sha256": "c04d85744be33c8efa713b81e29e64d8762d90fb432bb349e7824ce796cdd79a"
+    },
+    {
+      "bytes": 2344,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/optimizer_history.csv",
+      "role": "results",
+      "sha256": "a8480e1555ec7bdb33ecd27586e7400140abb99003c2c08929d44fce97c25d4a"
+    },
+    {
+      "bytes": 1301,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/optimizer_multiseed.csv",
+      "role": "results",
+      "sha256": "e7cc42550864563bdefc43080e57259e49d6950887fc389365ff43ae5495ca7b"
+    },
+    {
+      "bytes": 740,
+      "extension": ".json",
+      "mime_type": "application/json",
+      "path": "results/optimizer_result.json",
+      "role": "results",
+      "sha256": "5a24768ead0a1ee7d507967b2dd5a13fa454e2e28808b3cadd5cf69e5dbbc848"
+    },
+    {
+      "bytes": 192,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/paired_robust_gains.csv",
+      "role": "results",
+      "sha256": "b81172d6770091743af9aae38584b982b71df72b743dc9d68448ee894a1bc5ff"
+    },
+    {
+      "bytes": 3724,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/raman_analytical_validation.csv",
+      "role": "results",
+      "sha256": "bde69ee5698e505e5acd2efeafb6a5c6fc17b4c14d5f6b60e1a7d580fc84e164"
+    },
+    {
+      "bytes": 187,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/raman_step_convergence.csv",
+      "role": "results",
+      "sha256": "71c538cc19cf4defe47d081fefec0935d930e9b0bb4d5730e0ae8a085c449b7a"
+    },
+    {
+      "bytes": 10586,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/span_spectral_tilt.csv",
+      "role": "results",
+      "sha256": "2c0e92975223846e76c30916f862fdc88bed1c55c45fe8a51a1f37bc75057606"
+    },
+    {
+      "bytes": 1727,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/strategy_summary.csv",
+      "role": "results",
+      "sha256": "280ba4015f9ffbc0879d6dac69c27fc5dbce11a1ca6b46adb1478a5049e9efb9"
+    },
+    {
+      "bytes": 136,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/uncertainty_convergence.csv",
+      "role": "results",
+      "sha256": "55d3473a18a380a421f61eb53c93ac2a8b4750daf1e49218b3bb9ef05c41da97"
+    },
+    {
+      "bytes": 4568,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/uncertainty_holdout_samples.csv",
+      "role": "results",
+      "sha256": "aaa25c6c4e324ba8d3fd765812a044a0126d19b0f3c1121d197d12cf88ab8122"
+    },
+    {
+      "bytes": 11643,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/uncertainty_sensitivity.csv",
+      "role": "results",
+      "sha256": "3b1a637d14ea53d416498e94c71aba0accaf5aec2fd0640e802d492db7863bba"
+    },
+    {
+      "bytes": 2416,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/uncertainty_summary.csv",
+      "role": "results",
+      "sha256": "eb9ef1d0bf488f1b10023e1951d6326f980316c9e564c995bdb42c41bc080319"
+    },
+    {
+      "bytes": 1855,
+      "extension": ".csv",
+      "mime_type": "application/vnd.ms-excel",
+      "path": "results/waveform_metrics.csv",
+      "role": "results",
+      "sha256": "324626ba1b745dc5d8f485b9a931004a28f2ed44df1973b41138f3df447b5de7"
+    }
+  ],
+  "calibration_inputs": [],
+  "command_line": "run_all_experiments.py --debug --config config_fast_preview.yaml --run-id q2-fast-preview-001 --output-root runs --overwrite",
+  "completed_utc": "2026-07-19T19:35:53.127014+00:00",
+  "configuration": {
+    "amplification": {
+      "bands": {
+        "C": {
+          "enabled": true,
+          "max_gain_db": 25.0,
+          "noise_figure_db": [
+            4.8,
+            5.0
+          ],
+          "technology": "EDFA",
+          "wavelength_nm": [
+            1530.0,
+            1565.0
+          ]
+        },
+        "L": {
+          "enabled": true,
+          "max_gain_db": 28.0,
+          "noise_figure_db": [
+            5.4,
+            6.0
+          ],
+          "technology": "L_band_EDFA",
+          "wavelength_nm": [
+            1565.0,
+            1625.0
+          ]
+        },
+        "S": {
+          "enabled": true,
+          "max_gain_db": 42.0,
+          "noise_figure_db": [
+            7.0,
+            6.2
+          ],
+          "technology": "TDFA_or_calibrated_S_band_amplifier",
+          "wavelength_nm": [
+            1460.0,
+            1530.0
+          ]
+        }
+      },
+      "gain_flatness_tolerance_db": 0.05,
+      "noise_bandwidth_multiplier": 1.1
+    },
+    "fec": {
+      "b2b_snr_sweep_db": [
+        4.0,
+        34.0,
+        5.0
+      ],
+      "ngmi_target": 0.9,
+      "overhead_fraction": 0.25,
+      "pre_fec_ber_target": 0.004,
+      "threshold_metric": "ngmi"
+    },
+    "fiber": {
+      "attenuation_anchors": {
+        "db_per_km": [
+          0.225,
+          0.205,
+          0.19,
+          0.195,
+          0.225
+        ],
+        "wavelength_nm": [
+          1460.0,
+          1530.0,
+          1550.0,
+          1565.0,
+          1625.0
+        ]
+      },
+      "dispersion_ps_nm_km_at_1550": 17.0,
+      "dispersion_slope_ps_nm2_km": 0.058,
+      "effective_area_um2": 80.0,
+      "gamma_per_w_km_at_1550": 1.3,
+      "max_spans": 3,
+      "pmd_ps_sqrt_km": 0.05,
+      "span_length_km": 80.0
+    },
+    "grid": {
+      "lambda_max_nm": 1625.0,
+      "lambda_min_nm": 1460.0,
+      "mode": "full_scl",
+      "spacing_ghz": 200.0,
+      "subset_center_nm": 1542.5,
+      "subset_channels": 80
+    },
+    "launch": {
+      "fixed_preemphasis_s_to_l_db": 6.0,
+      "flat_power_dbm_per_channel": 0.0,
+      "max_power_dbm_per_channel": 3.0,
+      "min_power_dbm_per_channel": -5.0
+    },
+    "metadata": {
+      "calibration_sources": [],
+      "calibration_status": "UNVALIDATED_DEFAULTS",
+      "notes": "Fast preview configuration for generating draft data/figures quickly. Not journal evidence.",
+      "random_seed": 20260718,
+      "study_title": "FAST PREVIEW - Validated ISRS-Aware GSNR Modeling and Constrained Launch-Profile Optimization"
+    },
+    "modulation": {
+      "bits_per_symbol_per_pol": 4,
+      "format": "DP-16QAM",
+      "oversampling": 4,
+      "roll_off": 0.1,
+      "rrc_span_symbols": 12,
+      "symbol_rate_gbaud": 32.0,
+      "waveform_symbols": 4096
+    },
+    "nli": {
+      "coherence_epsilon": 0.08,
+      "modulation_correction": 0.86,
+      "primary_model": "power_profile_gn",
+      "semrau_valid_bandwidth_thz": 15.0,
+      "transceiver_snr_db": 35.0
+    },
+    "optimization": {
+      "air_weight": 1.0,
+      "band_balance_weight": 5.0,
+      "capacity_regression_tolerance_tbps": 1e-09,
+      "control_points": 9,
+      "cvar_weight": 0.5,
+      "early_stopping_patience": 2,
+      "early_stopping_tolerance": 1e-06,
+      "evaluation_spans": [
+        1,
+        2,
+        3
+      ],
+      "iterations": 2,
+      "learning_rate": 0.1,
+      "margin_weight": 0.5,
+      "method": "spsa_adam",
+      "minimum_air_gain_fraction": 0.0,
+      "minimum_band_working_fraction": {
+        "C": 0.0,
+        "L": 0.0,
+        "S": 0.0
+      },
+      "minimum_ngmi_gain": 0.0,
+      "minimum_nominal_gain_tbps": 0.0,
+      "minimum_robust_gain_ci_low_tbps": -999.0,
+      "multi_seed_runs": 2,
+      "outage_weight": 12.0,
+      "projection_smoothing_strength": 0.0,
+      "restarts": 1,
+      "robust_cvar_alpha": 0.1,
+      "robust_training_samples": 4,
+      "robust_training_seed": 20260720,
+      "robust_weight": 0.5,
+      "seed": 20260718,
+      "smoothness_weight": 0.02,
+      "softmin_temperature_ngmi": 0.01,
+      "spsa_perturbation_db": 0.12,
+      "target_spans": 3,
+      "variance_weight": 0.05
+    },
+    "output": {
+      "directory": "E:\\VS Code\\ISRS_SCL_Q2_Publication_Project\\runs\\q2-fast-preview-001\\results",
+      "figure_directory": "E:\\VS Code\\ISRS_SCL_Q2_Publication_Project\\runs\\q2-fast-preview-001\\figures",
+      "png_dpi": 140,
+      "save_profiles": true
+    },
+    "raman": {
+      "equivalent_noise_figure_db": -0.5,
+      "gain_csv": null,
+      "gain_peak_m_per_w": 8e-14,
+      "integration_step_m": 1600.0,
+      "pumps": [
+        {
+          "attenuation_db_per_km": 0.25,
+          "direction": "backward",
+          "power_w": 0.072,
+          "wavelength_nm": 1425.0
+        },
+        {
+          "attenuation_db_per_km": 0.23,
+          "direction": "backward",
+          "power_w": 0.06,
+          "wavelength_nm": 1450.0
+        },
+        {
+          "attenuation_db_per_km": 0.21,
+          "direction": "backward",
+          "power_w": 0.048,
+          "wavelength_nm": 1480.0
+        }
+      ],
+      "save_step_m": 1600.0,
+      "semrau_linear_slope_per_w_km_thz": 0.028
+    },
+    "reproducibility": {
+      "lock_files": [
+        "pyproject.toml"
+      ],
+      "repository_url": "https://github.com/Zisan301/ISRS_SCL_Q2_Publication_Project.git",
+      "strict_git_clean": false,
+      "write_manifest": true
+    },
+    "run": {
+      "allow_untracked_provenance": false,
+      "mode": "debug",
+      "output_root": "runs",
+      "overwrite": true,
+      "run_id": "q2-fast-preview-001"
+    },
+    "schema_version": 2,
+    "uncertainty": {
+      "bootstrap_samples": 100,
+      "correlation": null,
+      "cvar_alpha": 0.1,
+      "distributions": {
+        "attenuation_scale": {
+          "distribution": "normal",
+          "maximum": 1.15,
+          "mean": 1.0,
+          "minimum": 0.85,
+          "std": 0.02
+        },
+        "dispersion_scale": {
+          "distribution": "normal",
+          "maximum": 1.15,
+          "mean": 1.0,
+          "minimum": 0.85,
+          "std": 0.02
+        },
+        "gamma_scale": {
+          "distribution": "lognormal",
+          "maximum": 1.3,
+          "mean": 1.0,
+          "minimum": 0.75,
+          "std": 0.05
+        },
+        "noise_figure_offset_db": {
+          "distribution": "normal",
+          "maximum": 1.0,
+          "mean": 0.0,
+          "minimum": -1.0,
+          "std": 0.3
+        },
+        "pump_power_scale": {
+          "distribution": "normal",
+          "maximum": 1.2,
+          "mean": 1.0,
+          "minimum": 0.8,
+          "std": 0.03
+        },
+        "raman_gain_scale": {
+          "distribution": "lognormal",
+          "maximum": 1.5,
+          "mean": 1.0,
+          "minimum": 0.6,
+          "std": 0.08
+        },
+        "transceiver_snr_offset_db": {
+          "distribution": "normal",
+          "maximum": 2.0,
+          "mean": 0.0,
+          "minimum": -2.0,
+          "std": 0.5
+        }
+      },
+      "enabled": true,
+      "holdout_samples": 4,
+      "holdout_seed": 20260721
+    },
+    "validation": {
+      "convergence_relative_tolerance": 1.0,
+      "external_allow_interpolation": false,
+      "external_max_gsnr_bias_db": 999.0,
+      "external_max_gsnr_rmse_db": 999.0,
+      "external_max_nli_relative_rmse": 999.0,
+      "external_max_wavelength_error_nm": 0.5,
+      "external_minimum_coverage_fraction": 0.0,
+      "external_minimum_source_types": 0,
+      "external_minimum_sources": 0,
+      "external_minimum_span_counts": 0,
+      "external_minimum_wavelengths_per_band": 0,
+      "external_reference_csv": "validation_data/external_reference.csv",
+      "minimum_adaptive_capacity_gain_fraction": 0.0,
+      "minimum_adaptive_ngmi_gain": 0.0,
+      "minimum_optimizer_seeds": 1,
+      "minimum_probability_of_improvement": 0.0,
+      "minimum_robust_capacity_gain_tbps": -999.0,
+      "minimum_target_band_working_fraction": 0.0,
+      "minimum_uncertainty_holdout_samples": 4,
+      "minimum_uncertainty_success_fraction": 0.0,
+      "minimum_waveform_repeats": 1,
+      "nominal_closed_form_bandwidth_limit_thz": 15.0,
+      "raman_max_relative_error_limit": 1.0,
+      "raman_relative_rmse_limit": 1.0,
+      "require_external_validation": false,
+      "require_nonzero_uniform_reach": false,
+      "require_uncertainty_analysis": true,
+      "required_figures": []
+    },
+    "waveform": {
+      "acquisition_snr_threshold_db": 4.0,
+      "apply_phase_noise": false,
+      "apply_pmd": false,
+      "bootstrap_block_symbols": 128,
+      "bps_block_symbols": 64,
+      "bps_overlap": 0.5,
+      "bps_smoothing_blocks": 2,
+      "bps_trial_phases": 32,
+      "carrier_frequency_offset_hz": 0.0,
+      "carrier_recovery_mode": "pilot_aided",
+      "cma_step_size": 0.0002,
+      "cma_taps": 7,
+      "cma_training_symbols": 1000,
+      "consistency_tolerance_db": 2.5,
+      "equalizer_mode": "pilot_aided",
+      "equalizer_ridge": 1e-05,
+      "laser_linewidth_hz": 100000.0,
+      "metric_bootstrap_blocks": 8,
+      "minimum_reliability": 0.0,
+      "payload_symbols": 2048,
+      "pilot_spacing": 64,
+      "pilot_symbols": 512,
+      "repeats_per_band": 1,
+      "selected_wavelengths_nm": [
+        1495.0,
+        1550.0,
+        1595.0
+      ],
+      "timing_search": true,
+      "use_gn_nli_noise": true
+    }
+  },
+  "configuration_sha256": "a2cf7745bc4e62295d020a4c8916e8dacc601f240bd80db95e1d9db61545cbc5",
+  "created_utc": "2026-07-19T19:30:07.451690+00:00",
+  "environment": {
+    "machine": "AMD64",
+    "packages": {
+      "PyYAML": "6.0.2",
+      "matplotlib": "3.10.1",
+      "numpy": "2.1.3",
+      "pandas": "2.3.3",
+      "scipy": "1.15.2"
+    },
+    "platform": "Windows-11-10.0.22000-SP0",
+    "processor": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
+    "python_version": "3.12.7",
+    "utc_timestamp": "2026-07-19T19:30:07.371288+00:00"
+  },
+  "git": {
+    "available": true,
+    "branch": "main",
+    "commit": "bfa99d22afb9616bbd87b283a69ef3fb50ba942f",
+    "dirty": true,
+    "repository_url": "https://github.com/Zisan301/ISRS_SCL_Q2_Publication_Project.git",
+    "tag": null
+  },
+  "inputs": [
+    {
+      "bytes": 420,
+      "path": "validation_data/external_reference.csv",
+      "sha256": "e03e3aaf4fa0177ca0d83dda92626fd6265e6c59db27faf9953eb01a3f931058"
+    }
+  ],
+  "manifest_content_sha256": "d2769f53b2ac9c2fed1ccdeafaa383e04aa4efd8c1a3344dc47e5ecac384acba",
+  "run_id": "q2-fast-preview-001",
+  "run_mode": "debug",
+  "run_root": ".",
+  "schema_version": 2,
+  "seeds": {
+    "back_to_back": 20270718,
+    "base": 20260718,
+    "optimizer": 20260718,
+    "robust_training": 20260720,
+    "uncertainty_holdout": 20260721,
+    "waveform": 20280718
+  },
+  "stage_status": {
+    "b2b_receiver_calibration": {
+      "completed_utc": "2026-07-19T19:35:17.118558+00:00",
+      "details": {
+        "elapsed_seconds": 170.199
+      },
+      "passed": true
+    },
+    "calibration": {
+      "completed_utc": "2026-07-19T19:30:07.473274+00:00",
+      "details": {
+        "elapsed_seconds": 0.0
+      },
+      "passed": true
+    },
+    "external_validation": {
+      "completed_utc": "2026-07-19T19:35:42.010380+00:00",
+      "details": {
+        "reason": "External validation missing columns: ['configuration_hash', 'date', 'independent', 'metric_unit', 'provenance_reference', 'tool_version']",
+        "skipped": true
+      },
+      "passed": false
+    },
+    "nominal_sweeps": {
+      "completed_utc": "2026-07-19T19:35:18.031620+00:00",
+      "details": {
+        "elapsed_seconds": 0.895
+      },
+      "passed": true
+    },
+    "raman_validation": {
+      "completed_utc": "2026-07-19T19:30:11.841788+00:00",
+      "details": {
+        "elapsed_seconds": 4.368
+      },
+      "passed": true
+    },
+    "robust_optimization": {
+      "completed_utc": "2026-07-19T19:32:24.193733+00:00",
+      "details": {
+        "elapsed_seconds": 132.346
+      },
+      "passed": true
+    },
+    "spectral_tilt": {
+      "completed_utc": "2026-07-19T19:35:21.096597+00:00",
+      "details": {
+        "elapsed_seconds": 1.09
+      },
+      "passed": true
+    },
+    "uncertainty_holdout": {
+      "completed_utc": "2026-07-19T19:35:49.244088+00:00",
+      "details": {
+        "elapsed_seconds": 7.231
+      },
+      "passed": true
+    },
+    "waveform_validation": {
+      "completed_utc": "2026-07-19T19:35:40.448093+00:00",
+      "details": {
+        "elapsed_seconds": 19.346
+      },
+      "passed": true
+    }
+  }
+}

@@ -1,3 +1,0 @@
-adaptive,baseline,samples,mean,median,ci95_low,ci95_high,probability_positive,cvar_lower,worst_case
-adaptive,flat,4,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-adaptive,fixed,4,0.0,0.0,0.0,0.0,0.0,0.0,0.0
