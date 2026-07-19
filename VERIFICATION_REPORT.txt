@@ -1,0 +1,27 @@
+Verification date: 2026-07-18
+
+Static verification
+- python -m compileall completed successfully for src/, experiments/ and run_all_experiments.py.
+
+Automated tests
+- Command: PYTHONPATH=src pytest -q
+- Result: 12 tests passed.
+- Covered: exact full/subset grids, capacity arithmetic, attenuation conversion,
+  RK4 analytical pump agreement, photon-flux transfer conservation, Gray mapping,
+  BER/GMI monotonicity, noiseless metrics, optimizer power projection, waveform DSP
+  smoke recovery and nonzero cross-channel NLI.
+
+End-to-end smoke study
+- Command: PYTHONPATH=src python run_all_experiments.py --config config.yaml --smoke
+- Result: completed successfully.
+- Grid: 240-channel explicitly labelled subset, 11.95 THz.
+- Correct capacity: 61.44 Tb/s gross, 49.152 Tb/s net at 25% overhead.
+- Analytical Raman maximum relative error: approximately 3.23e-6 for smoke settings.
+- Adaptive objective improved in the smoke run.
+- CSV, JSON, PDF and PNG outputs were generated.
+
+Important scientific status
+- The code is tested software, but the default optical parameters remain UNVALIDATED_DEFAULTS.
+- Numerical reach/capacity values are not journal evidence until calibrated and independently
+  compared with GNPy, full-WDM SSFM or experiment.
+- No software can guarantee Q2 acceptance; reviewers can request additional validation.

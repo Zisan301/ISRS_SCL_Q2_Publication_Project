@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+title: "Validated ISRS-Aware GSNR Modeling and Constrained Launch-Profile Optimization for Ultra-Wideband S+C+L Coherent Transmission"
+message: "Please cite the associated manuscript and the original ISRS-GN publications listed in references.bib."
+type: software
+authors:
+  - family-names: Zisan
+    given-names: Shahariar Alam
+version: 1.0.0
+date-released: 2026-07-18
+license: MIT

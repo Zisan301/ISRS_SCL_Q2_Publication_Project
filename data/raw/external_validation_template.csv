@@ -1,0 +1,4 @@
+wavelength_nm,reference_gsnr_db,source
+1495.0,REAL_VALUE,GNPy
+1550.0,REAL_VALUE,SSFM
+1595.0,REAL_VALUE,Experiment

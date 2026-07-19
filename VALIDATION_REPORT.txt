@@ -1,0 +1,4 @@
+Generated files: 36
+Syntax validation: python -m compileall passed for all generated Python files.
+Behavioral validation: 22 generated regression tests passed in an isolated compatibility harness.
+Important: a complete end-to-end run against the remote repository was not possible in this environment because direct GitHub cloning was blocked by DNS. The files were designed against the connected repository APIs and inspected source interfaces. Run pytest and a smoke study after placing them in the repository.

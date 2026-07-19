@@ -1,0 +1,56 @@
+ASSESSMENT ITEM -> IMPLEMENTATION
+
+Capacity incorrectly labelled
+  system/capacity.py calculates gross and net separately. For 240 x 32 GBd DP-16QAM,
+  gross=61.44 Tb/s and net at 25% overhead=49.152 Tb/s.
+
+Physically inconsistent grid
+  system/grid.py provides full_scl (417 exact 50-GHz channels over 1460-1625 nm) and
+  paper_240_subset (240 contiguous 50-GHz channels explicitly marked as a subset).
+
+Unsupported BER/capacity arrays
+  All BER, GMI, NGMI and capacity values are calculated from GSNR or aligned waveform
+  samples. No np.logspace/np.linspace placeholder result curves are used.
+
+Incorrect attenuation conversion / one attenuation for all channels
+  fiber/attenuation.py uses ln(10)/10/1000 and wavelength-dependent anchors.
+
+Raman cross-band physics
+  fiber/raman_solver.py uses RK4, signal-to-signal coupling, photon-frequency depletion
+  ratio, per-channel attenuation, backward/forward pumps, positivity protection and
+  convergence tests.
+
+NLI cross-channel sum ignored
+  fiber/nonlinear_gn.py explicitly evaluates SCI and every XCI term. It also includes the
+  attributed Semrau Eqs. (10)-(11) benchmark.
+
+ASE applied incorrectly
+  fiber/amplification.py uses channel frequency, band-specific gain/NF, dual-pol ASE,
+  receiver bandwidth and 0.1-nm reference bandwidth. Raman and lumped ASE are separate.
+
+Double attenuation / average waveform gain
+  span_model.py performs one Raman/loss evolution and then applies per-channel gain.
+  No second attenuation or average C-band gain is applied to all channels.
+
+Optimizer unconstrained
+  optimization/ uses total-power projection, min/max per-channel bounds, smoothness,
+  convergence logging, a kept-best solution and an explicit improved flag.
+
+False waveform-level claims
+  dsp/ generates real random DP-16QAM symbols and recovers aligned symbols after RRC,
+  CD, PMD/polarization mixing, phase noise, ASE/NLI, CMA and BPS. The README clearly
+  labels it per-channel waveform validation conditioned on full-grid power-domain results,
+  not impossible 417-channel brute-force SSFM.
+
+Universal 18-dB threshold
+  experiments.run_b2b_calibration measures BER/EVM/GMI/NGMI through the configured DSP
+  over a back-to-back SNR sweep. Reach uses the configured calibrated FEC metric.
+
+Validation
+  validation/ provides analytical pump comparison, 80/40/20-m convergence, two-NLI-model
+  comparison and a merge with external GNPy/SSFM/experimental CSV data.
+
+Publication outputs
+  All figures are generated from computed/exported arrays as vector PDF and 600-dpi PNG.
+  VALIDATION_STATUS.json prevents uncalibrated defaults from being represented as final
+  journal evidence.

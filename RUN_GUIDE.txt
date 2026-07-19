@@ -1,0 +1,26 @@
+1. Create environment:
+   python -m venv .venv
+   Windows: .venv\Scripts\activate
+   Linux/macOS: source .venv/bin/activate
+
+2. Install:
+   python -m pip install --upgrade pip
+   python -m pip install -e ".[dev]"
+
+3. Verify:
+   pytest -q
+
+4. Fast smoke run:
+   python run_all_experiments.py --config config.yaml --smoke
+
+5. Full 417-channel run:
+   python run_all_experiments.py --config config.yaml --grid-mode full_scl
+
+6. Explicit 240-channel subset run:
+   python run_all_experiments.py --config config.yaml --grid-mode paper_240_subset
+
+7. Before journal submission:
+   - replace Raman gain, pump, NF and attenuation defaults with calibrated data;
+   - save independent GNPy/SSFM/experimental results as data/raw/external_validation.csv;
+   - set metadata.calibration_status to CALIBRATED only after verifying the data provenance;
+   - rerun the full study and use only exported CSV/JSON values in the manuscript.

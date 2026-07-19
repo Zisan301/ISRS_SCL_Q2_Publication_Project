@@ -1,0 +1,124 @@
+metadata:
+  study_title: "Validated ISRS-Aware GSNR Modeling and Constrained Launch-Profile Optimization for Ultra-Wideband S+C+L Coherent Transmission"
+  random_seed: 20260718
+  calibration_status: "UNVALIDATED_DEFAULTS"
+  notes: >-
+    Default pump, amplifier and Raman-gain values are physically plausible starting values,
+    not measured parameters. Replace them with laboratory or vendor-calibrated values and
+    complete independent GNPy/SSFM comparison before using numerical results as journal evidence.
+
+grid:
+  mode: "full_scl"                 # full_scl or paper_240_subset
+  lambda_min_nm: 1460.0
+  lambda_max_nm: 1625.0
+  spacing_ghz: 50.0
+  subset_channels: 240
+  subset_center_nm: 1542.5
+
+modulation:
+  symbol_rate_gbaud: 32.0
+  roll_off: 0.10
+  format: "DP-16QAM"
+  bits_per_symbol_per_pol: 4
+  oversampling: 4
+  rrc_span_symbols: 12
+  waveform_symbols: 32768
+
+fec:
+  overhead_fraction: 0.25
+  pre_fec_ber_target: 0.004
+  ngmi_target: 0.90
+  threshold_metric: "ngmi"
+  b2b_snr_sweep_db: [8.0, 24.0, 0.5]
+
+fiber:
+  span_length_km: 80.0
+  max_spans: 10
+  effective_area_um2: 80.0
+  gamma_per_w_km_at_1550: 1.30
+  dispersion_ps_nm_km_at_1550: 17.0
+  dispersion_slope_ps_nm2_km: 0.058
+  pmd_ps_sqrt_km: 0.05
+  attenuation_anchors:
+    wavelength_nm: [1460.0, 1530.0, 1550.0, 1565.0, 1625.0]
+    db_per_km:    [0.225,  0.205,  0.190,  0.195,  0.225]
+
+raman:
+  integration_step_m: 80.0
+  save_step_m: 800.0
+  gain_peak_m_per_w: 8.0e-14
+  gain_csv: null
+  semrau_linear_slope_per_w_km_thz: 0.028
+  pumps:
+    - {wavelength_nm: 1425.0, power_w: 0.072, attenuation_db_per_km: 0.25, direction: "backward"}
+    - {wavelength_nm: 1450.0, power_w: 0.060, attenuation_db_per_km: 0.23, direction: "backward"}
+    - {wavelength_nm: 1480.0, power_w: 0.048, attenuation_db_per_km: 0.21, direction: "backward"}
+  equivalent_noise_figure_db: -0.5
+
+amplification:
+  noise_bandwidth_multiplier: 1.10
+  bands:
+    S:
+      enabled: true
+      technology: "TDFA_or_calibrated_S_band_amplifier"
+      wavelength_nm: [1460.0, 1530.0]
+      noise_figure_db: [7.0, 6.2]
+      max_gain_db: 42.0
+    C:
+      enabled: true
+      technology: "EDFA"
+      wavelength_nm: [1530.0, 1565.0]
+      noise_figure_db: [4.8, 5.0]
+      max_gain_db: 25.0
+    L:
+      enabled: true
+      technology: "L_band_EDFA"
+      wavelength_nm: [1565.0, 1625.0]
+      noise_figure_db: [5.4, 6.0]
+      max_gain_db: 28.0
+  gain_flatness_tolerance_db: 0.05
+
+nli:
+  primary_model: "power_profile_gn"   # power_profile_gn or semrau_closed_form
+  modulation_correction: 0.86
+  coherence_epsilon: 0.08
+  transceiver_snr_db: 35.0
+  semrau_valid_bandwidth_thz: 15.0
+
+launch:
+  flat_power_dbm_per_channel: 0.0
+  min_power_dbm_per_channel: -5.0
+  max_power_dbm_per_channel: 3.0
+  fixed_preemphasis_s_to_l_db: 6.0
+
+optimization:
+  target_spans: 8
+  method: "spsa_adam"
+  iterations: 30
+  control_points: 17
+  learning_rate: 0.10
+  spsa_perturbation_db: 0.12
+  softmin_temperature_db: 0.35
+  variance_weight: 0.08
+  smoothness_weight: 0.02
+  outage_weight: 2.0
+  seed: 20260718
+
+waveform:
+  selected_wavelengths_nm: [1495.0, 1550.0, 1595.0]
+  cma_taps: 11
+  cma_step_size: 0.0002
+  cma_training_symbols: 6000
+  bps_trial_phases: 64
+  bps_block_symbols: 64
+  laser_linewidth_hz: 100000.0
+  carrier_frequency_offset_hz: 0.0
+  apply_pmd: true
+  apply_phase_noise: true
+  use_gn_nli_noise: true
+
+output:
+  directory: "results/publication"
+  figure_directory: "figures"
+  png_dpi: 600
+  save_profiles: true

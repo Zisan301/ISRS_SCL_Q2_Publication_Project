@@ -1,0 +1,85 @@
+# ISRS S+C+L Q2 Publication Project
+
+This repository is a complete replacement foundation for the manuscript **“Waveform-Level Analysis of Inter-Band Raman Tilt and Differential DSP Penalties in S+C+L Band Coherent Optical Systems.”** It directly addresses the major technical defects identified in `Assessment.docx`:
+
+- a physically consistent 50-GHz full S+C+L frequency grid (417 channels) and an explicitly labelled 240-channel contiguous subset;
+- correct conversion of dB/km power attenuation to Np/m;
+- coupled signal-to-signal ISRS with photon-frequency energy conservation, optional backward Raman pumps, RK4 integration, positivity protection and convergence tests;
+- wavelength-dependent attenuation, dispersion, nonlinearity, amplifier gain and noise figure;
+- dual-polarization ASE in explicitly defined receiver and 0.1-nm bandwidths;
+- two NLI estimators: the attributed Semrau closed-form SPM/XPM approximation and a power-profile-weighted GN model that uses the actual numerical Raman profiles and all cross-channel terms;
+- GSNR, 0.1-nm OSNR, BER, normalized EVM, Q factor, GMI and NGMI;
+- correct gross/net capacity arithmetic for DP-16QAM and 25% FEC overhead;
+- total-power-conserving, bounded and spectrally smoothed adaptive launch-profile optimization using SPSA/Adam or finite-difference projected descent;
+- back-to-back threshold calibration instead of assuming an 18-dB OSNR threshold;
+- representative-channel DP-16QAM waveform validation with RRC pulse shaping, chromatic dispersion, PMD/polarization mixing, ASE/NLI injection, 2x2 CMA, blind phase search, symbol alignment, BER/EVM/GMI/NGMI and constellation export;
+- deterministic seeds, CSV/JSON exports, vector PDF figures, 600-dpi PNG figures and automated tests.
+
+## Scientific scope and non-negotiable limitation
+
+The code is designed to be reviewer-defensible, reproducible and free of fabricated BER/capacity/constellation arrays. It **cannot guarantee Q2 acceptance**. The default pump powers, Raman-gain curve and amplifier noise figures are plausible starting values, not measured calibration data. Before submission:
+
+1. replace the defaults with measured or vendor-characterized parameters;
+2. validate several operating points against an independent tool such as GNPy and against a full WDM split-step Fourier simulation or experiment;
+3. regenerate every paper number and figure from the exported result files;
+4. report uncertainty and model-validity limits, especially because the full 1460–1625 nm spectrum is wider than the nominal 15-THz validity range of the first-order Semrau closed form.
+
+The waveform module performs **per-channel waveform validation conditioned on full-grid ASE/NLI and Raman power-domain results**. It does not falsely claim brute-force 417-channel, 20.85-THz time-domain SSFM, which would require extreme sampling rates and independent high-performance computing validation.
+
+## Capacity correction
+
+For 240 channels, 32 GBd, DP-16QAM:
+
+- gross line rate = `240 × 32e9 × 2 polarizations × 4 bits = 61.44 Tb/s`;
+- net line rate with 25% overhead = `61.44 / 1.25 = 49.152 Tb/s`.
+
+Therefore, 49.152 Tb/s must be labelled **net**, not gross.
+
+## Installation
+
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# Linux/macOS: source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
+pytest -q
+```
+
+## Fast smoke study
+
+```bash
+python run_all_experiments.py --config config.yaml --smoke
+```
+
+## Full study
+
+```bash
+python run_all_experiments.py --config config.yaml
+```
+
+Use the physically limited paper comparison explicitly:
+
+```bash
+python run_all_experiments.py --config config.yaml --grid-mode paper_240_subset
+```
+
+## Publication gate
+
+The run writes `VALIDATION_STATUS.json`. Results are marked `UNVALIDATED_DEFAULTS` until the configuration metadata is changed after external calibration and an external-validation CSV is provided. This prevents accidental use of illustrative defaults as journal evidence.
+
+## Main outputs
+
+- `results/.../grid.csv`
+- `results/.../b2b_calibration.csv`
+- `results/.../link_flat.csv`
+- `results/.../link_fixed.csv`
+- `results/.../link_adaptive.csv`
+- `results/.../optimizer_history.csv`
+- `results/.../waveform_metrics.csv`
+- `results/.../summary.json`
+- `figures/*.pdf` and `figures/*.png`
+
+## Model attribution
+
+The closed-form SPM/XPM implementation follows Eqs. (10) and (11) of D. Semrau, R. I. Killey and P. Bayvel, *Journal of Lightwave Technology*, 2019. Cite the original papers in `references.bib`. The implementation in this repository is independently written and released under MIT; it is not a copy of third-party source code.

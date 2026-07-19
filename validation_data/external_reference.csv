@@ -1,0 +1,4 @@
+source_id,source_type,strategy,spans,wavelength_nm,metric,reference_value,reference_uncertainty,notes
+gnpy_case_001,GNPy,flat,1,1495.0,gsnr_db,,,Replace blank reference_value with independently generated data
+ssfm_case_001,SSFM,fixed,8,1550.0,gsnr_db,,,Replace blank reference_value with independent SSFM data
+experiment_case_001,Experiment,adaptive,8,1595.0,gsnr_db,,,Replace blank reference_value with measured data
