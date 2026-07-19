@@ -388,18 +388,67 @@ def run_publication_study(config_path: str | Path, grid_mode: str | None = None,
     plot_waveform_metrics_comparison(waveform, paths.figures / "06_waveform_metrics", int(cfg["output"]["png_dpi"]), metadata={"run_id": run_id}); plot_waveform_power_consistency(waveform, paths.figures / "07_waveform_power_consistency", int(cfg["output"]["png_dpi"]), metadata={"run_id": run_id})
 
     external_requirements = None
+
+    def _external_thresholds() -> dict[str, Any]:
+        return {
+            "minimum_external_coverage": cfg["validation"]["external_minimum_coverage_fraction"],
+            "minimum_sources": cfg["validation"]["external_minimum_sources"],
+            "minimum_source_types": cfg["validation"]["external_minimum_source_types"],
+            "minimum_wavelengths_per_band": cfg["validation"]["external_minimum_wavelengths_per_band"],
+            "minimum_span_counts": cfg["validation"]["external_minimum_span_counts"],
+            "maximum_gsnr_db_rmse": cfg["validation"]["external_max_gsnr_rmse_db"],
+            "maximum_gsnr_db_absolute_bias": cfg["validation"]["external_max_gsnr_bias_db"],
+            "maximum_nli_relative_rmse": cfg["validation"]["external_max_nli_relative_rmse"],
+            "required_external_metrics": ("gsnr_db",),
+        }
+
+    def _write_external_skip(reason: str) -> None:
+        nonlocal external_requirements
+        external_requirements = pd.DataFrame([
+            {
+                "requirement": "external_validation_data",
+                "passed": False,
+                "value": 0.0,
+                "threshold": 1.0,
+                "reason": reason,
+                "run_mode": cfg["run"]["mode"],
+            }
+        ])
+        pd.DataFrame().to_csv(paths.results / "external_validation_comparisons.csv", index=False)
+        pd.DataFrame().to_csv(paths.results / "external_validation_summary.csv", index=False)
+        external_requirements.to_csv(paths.results / "external_validation_requirements.csv", index=False)
+        mark_stage(ctx.manifest, "external_validation", passed=False, details={"skipped": True, "reason": reason})
+        print(
+            f"[ISRS-SCL] SKIP external_validation: {reason}. "
+            "Smoke/debug runs may continue; publication mode requires real independent validation data.",
+            flush=True,
+        )
+
     def external_stage() -> Any:
         nonlocal external_requirements
         external = load_external_validation(cfg["validation"]["external_reference_csv"])
-        thresholds = {"minimum_external_coverage": cfg["validation"]["external_minimum_coverage_fraction"], "minimum_sources": cfg["validation"]["external_minimum_sources"], "minimum_source_types": cfg["validation"]["external_minimum_source_types"], "minimum_wavelengths_per_band": cfg["validation"]["external_minimum_wavelengths_per_band"], "minimum_span_counts": cfg["validation"]["external_minimum_span_counts"], "maximum_gsnr_db_rmse": cfg["validation"]["external_max_gsnr_rmse_db"], "maximum_gsnr_db_absolute_bias": cfg["validation"]["external_max_gsnr_bias_db"], "maximum_nli_relative_rmse": cfg["validation"]["external_max_nli_relative_rmse"], "required_external_metrics": ("gsnr_db",)}
-        result = compare_external_validation(channel_sweep, external, wavelength_tolerance_nm=float(cfg["validation"]["external_max_wavelength_error_nm"]), thresholds=thresholds, allow_interpolation=bool(cfg["validation"]["external_allow_interpolation"]))
-        result.comparisons.to_csv(paths.results / "external_validation_comparisons.csv", index=False); result.summary.to_csv(paths.results / "external_validation_summary.csv", index=False); result.requirements.to_csv(paths.results / "external_validation_requirements.csv", index=False); external_requirements = result.requirements
-        plot_external_validation(result.comparisons, paths.figures / "12_external_validation", int(cfg["output"]["png_dpi"]), metadata={"run_id": run_id}); return result
+        result = compare_external_validation(
+            channel_sweep,
+            external,
+            wavelength_tolerance_nm=float(cfg["validation"]["external_max_wavelength_error_nm"]),
+            thresholds=_external_thresholds(),
+            allow_interpolation=bool(cfg["validation"]["external_allow_interpolation"]),
+        )
+        result.comparisons.to_csv(paths.results / "external_validation_comparisons.csv", index=False)
+        result.summary.to_csv(paths.results / "external_validation_summary.csv", index=False)
+        result.requirements.to_csv(paths.results / "external_validation_requirements.csv", index=False)
+        external_requirements = result.requirements
+        plot_external_validation(result.comparisons, paths.figures / "12_external_validation", int(cfg["output"]["png_dpi"]), metadata={"run_id": run_id})
+        return result
+
     external_result = None
-    try: external_result = _stage(ctx, "external_validation", external_stage)
-    except (FileNotFoundError, ValueError):
-        if cfg["run"]["mode"] == "publication": raise
-        mark_stage(ctx.manifest, "external_validation", passed=False, details={"non_publication_mode": True})
+    if cfg["run"]["mode"] == "publication":
+        external_result = _stage(ctx, "external_validation", external_stage)
+    else:
+        try:
+            external_result = _stage(ctx, "external_validation", external_stage)
+        except (FileNotFoundError, ValueError) as exc:
+            _write_external_skip(str(exc))
 
     uncertainty = None
     if bool(cfg["uncertainty"]["enabled"]):

@@ -172,6 +172,18 @@ def run_uncertainty_analysis(
             })
     summary = pd.DataFrame(summary_rows)
 
+    def _safe_spearman(pair: pd.DataFrame, parameter: str, metric: str) -> tuple[float, str]:
+        if len(pair) < 4:
+            return np.nan, "insufficient_samples"
+        if pair[parameter].nunique(dropna=True) <= 1:
+            return np.nan, "constant_parameter"
+        if pair[metric].nunique(dropna=True) <= 1:
+            return np.nan, "constant_metric"
+        rho = pair[parameter].corr(pair[metric], method="spearman")
+        if pd.isna(rho):
+            return np.nan, "undefined"
+        return float(rho), "ok"
+
     parameter_names = [name for name in holdout.names if name in successful]
     sensitivity_rows: list[dict[str, Any]] = []
     for strategy, group in successful.groupby("strategy", sort=False):
@@ -180,8 +192,15 @@ def run_uncertainty_analysis(
                 if metric not in group:
                     continue
                 pair = group[[parameter, metric]].dropna()
-                rho = float(pair[parameter].corr(pair[metric], method="spearman")) if len(pair) >= 4 else np.nan
-                sensitivity_rows.append({"strategy": strategy, "parameter": parameter, "metric": metric, "spearman_rho": rho, "abs_spearman_rho": abs(rho) if np.isfinite(rho) else np.nan})
+                rho, status = _safe_spearman(pair, parameter, metric)
+                sensitivity_rows.append({
+                    "strategy": strategy,
+                    "parameter": parameter,
+                    "metric": metric,
+                    "spearman_rho": rho,
+                    "abs_spearman_rho": abs(rho) if np.isfinite(rho) else np.nan,
+                    "sensitivity_status": status,
+                })
     sensitivity = pd.DataFrame(sensitivity_rows)
 
     convergence_rows: list[dict[str, Any]] = []

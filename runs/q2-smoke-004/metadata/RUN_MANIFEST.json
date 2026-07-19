@@ -7,7 +7,7 @@
       "mime_type": "application/pdf",
       "path": "figures/01_raman_validation.pdf",
       "role": "figures",
-      "sha256": "03898dfbd675cd9352b614efbebdb56019573d21a11b6e851efbffd769750a09"
+      "sha256": "b7bab4a54ae507df2eaae6510f759c9ce5d8dacdeb3ae247e5283329eb09a083"
     },
     {
       "bytes": 67773,
@@ -39,7 +39,7 @@
       "mime_type": "application/pdf",
       "path": "figures/02_isrs_spectral_tilt.pdf",
       "role": "figures",
-      "sha256": "6dae1bdf51de18c51866ca241119753aef13231e533f9c9408d4fbac20a21ebb"
+      "sha256": "b4000673ab7e012e557f6abb0cf3a32858f10ad5fe053b82d694692485db2e0c"
     },
     {
       "bytes": 41700,
@@ -71,7 +71,7 @@
       "mime_type": "application/pdf",
       "path": "figures/03_launch_profiles.pdf",
       "role": "figures",
-      "sha256": "f78b8f4e3509d8c8216f88399a5d3ddd0cc32dad50ef4cc48db4793ca88397d4"
+      "sha256": "35063fbec385e94047f3466c467f71b78f1d8b41756233934cccdea55e952516"
     },
     {
       "bytes": 35966,
@@ -103,7 +103,7 @@
       "mime_type": "application/pdf",
       "path": "figures/04_gsnr_vs_wavelength.pdf",
       "role": "figures",
-      "sha256": "3d1f11dea166efb8e47d2c65bf4dd20893cbbfd4411c41debcc01ad0e236fc10"
+      "sha256": "3a358bfce746de8b83c45fd565e151b8e04d54c218c4ff8046194b4dc41ab27c"
     },
     {
       "bytes": 37437,
@@ -135,7 +135,7 @@
       "mime_type": "application/pdf",
       "path": "figures/05_gsnr_distance_heatmap.pdf",
       "role": "figures",
-      "sha256": "782620ec14d5774e046307b9e989f3523baeb1df215ca688bc9f8f773ecd62ca"
+      "sha256": "d8eeee8e30b43b784fc867733f93463102dc8936eb7e3e2009918ccf1a405aae"
     },
     {
       "bytes": 37610,
@@ -167,7 +167,7 @@
       "mime_type": "application/pdf",
       "path": "figures/06_waveform_metrics.pdf",
       "role": "figures",
-      "sha256": "f4852d639c199e1fdcec3a1e5577b19dc7da1ca43cb8285f099cb3319385b382"
+      "sha256": "b95680244845d3033473a1cc16c5d6a938f590e488e8b00f82646b399b03ffb6"
     },
     {
       "bytes": 23818,
@@ -199,7 +199,7 @@
       "mime_type": "application/pdf",
       "path": "figures/07_waveform_power_consistency.pdf",
       "role": "figures",
-      "sha256": "893fa81ac32879a7eb1319dbc4122bc9659dd0a5e2b4c32f7a27ffed4af81bde"
+      "sha256": "8b1089db887a973b9f63c7f79cc11588af0abdeeaae44208709e100e1bce28ee"
     },
     {
       "bytes": 35536,
@@ -231,7 +231,7 @@
       "mime_type": "application/pdf",
       "path": "figures/08_capacity_reach.pdf",
       "role": "figures",
-      "sha256": "b3ac67d72215d11c16ca28f381e8342d8323eb0adaabd82bcb8269412726597b"
+      "sha256": "794232407d900e2caf79585c013fb2c655b6c362e920d4e6a6c815f655a9415f"
     },
     {
       "bytes": 37364,
@@ -263,7 +263,7 @@
       "mime_type": "application/pdf",
       "path": "figures/09_optimizer_convergence.pdf",
       "role": "figures",
-      "sha256": "680869a140acb2bd6814bc6e565b6d0862f3843c0a5f0d60c477a8acbcd1269c"
+      "sha256": "63d200d4b0b71fd748fad8a29d386d22dbe5b50de2f79e95b30567169c142c05"
     },
     {
       "bytes": 31818,
@@ -295,7 +295,7 @@
       "mime_type": "application/pdf",
       "path": "figures/10_uncertainty_intervals.pdf",
       "role": "figures",
-      "sha256": "9e6dc72859944445de396fe5866d6683a8a78b2e7c6e58fa2d1a09e0101fe0a7"
+      "sha256": "fed4153063836a3d9825ff068a54654b7c4caf7ee29f2733369e2cbd56ab6465"
     },
     {
       "bytes": 23165,
@@ -327,7 +327,7 @@
       "mime_type": "application/pdf",
       "path": "figures/11_global_sensitivity.pdf",
       "role": "figures",
-      "sha256": "36bc338dd97ee0f0323b1b3b6c99e730664cdb8454b2bab154e589a6498465b1"
+      "sha256": "824ce55d8cf4fee3939f172559e31c990889207985bd898e800b0901a9693efe"
     },
     {
       "bytes": 18635,
@@ -359,7 +359,7 @@
       "mime_type": "application/pdf",
       "path": "figures/13_paired_robust_gain.pdf",
       "role": "figures",
-      "sha256": "8ea96e123f5b828b457b38e6dff0aed063f4e0a7f9a7501bde572bad2acf300d"
+      "sha256": "6840dab21dc803f000f8de060aecc32c611e923a03bddb6da9be7946e8b132e4"
     },
     {
       "bytes": 22791,
@@ -391,7 +391,7 @@
       "mime_type": "application/pdf",
       "path": "figures/waveform_C_below_threshold.pdf",
       "role": "figures",
-      "sha256": "fb8c0d64f4f5102a034b9b0c88f73a31c9550572ec69068961a77305c9f39c52"
+      "sha256": "363a99dd72e5a4e8d5b3441a86527972387b15c2dc47057a8879159447465d5f"
     },
     {
       "bytes": 132129,
@@ -423,7 +423,7 @@
       "mime_type": "application/pdf",
       "path": "figures/waveform_C_high_margin.pdf",
       "role": "figures",
-      "sha256": "15191a4caf69a78d1a54e16a52c5b2f84167cef6dfb1da43b34c3b9f6bf2a050"
+      "sha256": "e635d544c4bd9d3d6ad46fb40b41288928a623bb719e1291323ed5a1ae13f9ae"
     },
     {
       "bytes": 113525,
@@ -455,7 +455,7 @@
       "mime_type": "application/pdf",
       "path": "figures/waveform_C_near_threshold.pdf",
       "role": "figures",
-      "sha256": "6c62b3b0e9ede93b9ab90b9cb253de76b1c95deaaac4eecaab4fda133f55dd80"
+      "sha256": "e3db7545a4ce63cdf1308e8b3d34f82680438cf821dd27c38dd32f13b77af930"
     },
     {
       "bytes": 136522,
@@ -490,12 +490,12 @@
       "sha256": "954aec185fba0bc32961c838e78446dd36a0f34eb94f74107800fa61e3e3533a"
     },
     {
-      "bytes": 12926,
+      "bytes": 12927,
       "extension": ".json",
       "mime_type": "application/json",
       "path": "metadata/RUN_MANIFEST.failed.json",
       "role": "metadata",
-      "sha256": "f4aca735cf9f1120a33a0ae519890b9cc116d519e9dc59fc5f9c4ad8d4087e8b"
+      "sha256": "2e53c2910e6b57cee5b6d21bdedb79af8bf1b7af54474e82a644d2b2a1476bf0"
     },
     {
       "bytes": 11297,
@@ -503,7 +503,7 @@
       "mime_type": "application/json",
       "path": "metadata/RUN_MANIFEST.initial.json",
       "role": "metadata",
-      "sha256": "741930a0e78dee24770e242a120631b638267a393a6872492bde308e8ffcbdc1"
+      "sha256": "724004e447db4bce1e881fa6d95464f8ad221ad91a98155e59c811be05600b7b"
     },
     {
       "bytes": 1001,
@@ -684,7 +684,7 @@
   ],
   "calibration_inputs": [],
   "command_line": "run_all_experiments.py --smoke --config config_q2_final.yaml --run-id q2-smoke-004 --output-root runs --overwrite",
-  "completed_utc": "2026-07-19T17:39:10.895679+00:00",
+  "completed_utc": "2026-07-19T17:42:05.893122+00:00",
   "configuration": {
     "amplification": {
       "bands": {
@@ -1016,7 +1016,7 @@
     }
   },
   "configuration_sha256": "77cab339e9b75566bbe686df3832127d90ce02facfc2b751df7adadadc5b26e9",
-  "created_utc": "2026-07-19T17:37:04.461546+00:00",
+  "created_utc": "2026-07-19T17:40:45.063583+00:00",
   "environment": {
     "machine": "AMD64",
     "packages": {
@@ -1029,12 +1029,12 @@
     "platform": "Windows-11-10.0.22000-SP0",
     "processor": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
     "python_version": "3.12.7",
-    "utc_timestamp": "2026-07-19T17:37:04.410517+00:00"
+    "utc_timestamp": "2026-07-19T17:40:45.028095+00:00"
   },
   "git": {
     "available": true,
     "branch": "main",
-    "commit": "dbf868357b752742ee76cc180864490ba0dfb10a",
+    "commit": "a34f0960691587ff330dd7e8f805d94a9f616921",
     "dirty": true,
     "repository_url": "https://github.com/Zisan301/ISRS_SCL_Q2_Publication_Project.git",
     "tag": null
@@ -1046,7 +1046,7 @@
       "sha256": "e03e3aaf4fa0177ca0d83dda92626fd6265e6c59db27faf9953eb01a3f931058"
     }
   ],
-  "manifest_content_sha256": "e3e550e94fc91585f71154bd3715e1290878dd94ea2639cc14a5d350a701f533",
+  "manifest_content_sha256": "1f42644cd1f158ba58fe019126476e28b575feceb855454d127fa2a16b7b6148",
   "run_id": "q2-smoke-004",
   "run_mode": "smoke",
   "run_root": ".",
@@ -1061,65 +1061,65 @@
   },
   "stage_status": {
     "b2b_receiver_calibration": {
-      "completed_utc": "2026-07-19T17:38:58.504300+00:00",
+      "completed_utc": "2026-07-19T17:41:54.738196+00:00",
       "details": {
-        "elapsed_seconds": 10.374
+        "elapsed_seconds": 10.664
       },
       "passed": true
     },
     "calibration": {
-      "completed_utc": "2026-07-19T17:37:04.488247+00:00",
+      "completed_utc": "2026-07-19T17:40:45.092273+00:00",
       "details": {
         "elapsed_seconds": 0.0
       },
       "passed": true
     },
     "external_validation": {
-      "completed_utc": "2026-07-19T17:39:05.305634+00:00",
+      "completed_utc": "2026-07-19T17:42:01.721531+00:00",
       "details": {
         "non_publication_mode": true
       },
       "passed": false
     },
     "nominal_sweeps": {
-      "completed_utc": "2026-07-19T17:38:59.122178+00:00",
+      "completed_utc": "2026-07-19T17:41:55.364650+00:00",
       "details": {
-        "elapsed_seconds": 0.615
+        "elapsed_seconds": 0.628
       },
       "passed": true
     },
     "raman_validation": {
-      "completed_utc": "2026-07-19T17:37:08.014464+00:00",
+      "completed_utc": "2026-07-19T17:40:47.849644+00:00",
       "details": {
-        "elapsed_seconds": 3.523
+        "elapsed_seconds": 2.769
       },
       "passed": true
     },
     "robust_optimization": {
-      "completed_utc": "2026-07-19T17:38:46.111846+00:00",
+      "completed_utc": "2026-07-19T17:41:42.930390+00:00",
       "details": {
-        "elapsed_seconds": 98.09
+        "elapsed_seconds": 55.067
       },
       "passed": true
     },
     "spectral_tilt": {
-      "completed_utc": "2026-07-19T17:39:01.178006+00:00",
+      "completed_utc": "2026-07-19T17:41:57.519251+00:00",
       "details": {
-        "elapsed_seconds": 0.368
+        "elapsed_seconds": 0.379
       },
       "passed": true
     },
     "uncertainty_holdout": {
-      "completed_utc": "2026-07-19T17:39:08.290209+00:00",
+      "completed_utc": "2026-07-19T17:42:04.987941+00:00",
       "details": {
-        "elapsed_seconds": 2.987
+        "elapsed_seconds": 3.267
       },
       "passed": true
     },
     "waveform_validation": {
-      "completed_utc": "2026-07-19T17:39:04.637047+00:00",
+      "completed_utc": "2026-07-19T17:42:01.097291+00:00",
       "details": {
-        "elapsed_seconds": 3.474
+        "elapsed_seconds": 3.586
       },
       "passed": true
     }
