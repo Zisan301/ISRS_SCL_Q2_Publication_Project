@@ -156,13 +156,27 @@ def _strategy_sweeps(link: LinkModel, profiles: Mapping[str, np.ndarray], cfg: M
 
 def _b2b_points(cfg: Mapping[str, Any], predicted_range: tuple[float, float] | None) -> np.ndarray:
     start, stop, step = map(float, cfg["fec"]["b2b_snr_sweep_db"])
-    if predicted_range is not None and cfg.get("run", {}).get("mode") != "smoke":
-        start = min(start, predicted_range[0] - 2.0)
-        stop = max(stop, predicted_range[1] + 2.0)
+    if predicted_range is not None:
+        # The calibrated LinkModel deliberately rejects extrapolation.  Therefore
+        # every mode, including smoke, must cover the physical GSNR range observed
+        # in the pre-calibration nominal sweep.  Smoke still uses a sparse set of
+        # points, but it may not shrink the range to 8..20 dB when the link model
+        # produces lower or higher GSNR values.
+        low, high = map(float, predicted_range)
+        if np.isfinite(low) and np.isfinite(high):
+            start = min(start, low - 2.0)
+            stop = max(stop, high + 2.0)
+    if stop <= start:
+        raise ValueError(f"Invalid B2B SNR sweep range: start={start:g}, stop={stop:g}")
     if cfg.get("run", {}).get("mode") == "smoke":
-        # Smoke runs are for plumbing and API validation, not final receiver calibration.
-        # Keep enough points for monotone interpolation while avoiding a long B2B sweep.
-        return np.unique(np.round(np.array([start, 12.0, 16.0, stop], dtype=float), 6))
+        # Smoke runs are for plumbing and API validation, not final receiver
+        # calibration.  Use few points but always include the dynamic endpoints so
+        # nominal_sweeps cannot request receiver-calibration extrapolation.
+        candidates = [start, stop]
+        for value in (8.0, 12.0, 16.0, 20.0, 24.0, 28.0, 32.0):
+            if start < value < stop:
+                candidates.append(value)
+        return np.unique(np.round(np.array(sorted(candidates), dtype=float), 6))
     coarse = np.arange(start, stop + step / 2, step)
     # Dense region around likely 16-QAM FEC transition.
     dense = np.arange(max(start, 6.0), min(stop, 18.0) + 0.25, 0.25)
