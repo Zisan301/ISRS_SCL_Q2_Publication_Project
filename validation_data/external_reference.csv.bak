@@ -1,0 +1,2 @@
+source_id,source_type,tool_version,configuration_hash,date,independent,provenance_reference,span_count,wavelength_nm,band,strategy,metric,metric_value,metric_unit,uncertainty,notes
+gnpy_test_flat_1span_1550nm_gsnr,GNPy,2.14.1,37bca808674e01c64e1658d0b1f23e8b90cc7882932b7021b5ca29aeb79ffac0,2026-07-20,true,external_validation/gnpy/raw_outputs/gnpy_test_flat_1span.txt,1,1550.0,C,flat,gsnr_db,26.99,dB,0.3,First independent GNPy flat 1-span C-band reference; nearest channel 193.400 THz

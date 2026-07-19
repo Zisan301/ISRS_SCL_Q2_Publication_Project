@@ -1,0 +1,34 @@
+{
+  "spectrum": [
+    {
+      "f_min": 196585218360655.75,
+      "f_max": 200530072240802.66,
+      "baud_rate": 32000000000.0,
+      "slot_width": 50000000000.0,
+      "roll_off": 0.15,
+      "tx_osnr": 40,
+      "delta_pdb": 0,
+      "label": "S-band-flat-32G"
+    },
+    {
+      "f_min": 192174652564102.56,
+      "f_max": 195304532899022.78,
+      "baud_rate": 32000000000.0,
+      "slot_width": 50000000000.0,
+      "roll_off": 0.15,
+      "tx_osnr": 40,
+      "delta_pdb": 0,
+      "label": "C-band-flat-32G"
+    },
+    {
+      "f_min": 186206495652173.9,
+      "f_max": 190950610191082.8,
+      "baud_rate": 32000000000.0,
+      "slot_width": 50000000000.0,
+      "roll_off": 0.15,
+      "tx_osnr": 40,
+      "delta_pdb": 0,
+      "label": "L-band-flat-32G"
+    }
+  ]
+}
