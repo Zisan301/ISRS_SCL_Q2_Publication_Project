@@ -224,15 +224,57 @@ def run_b2b_calibration(cfg: Mapping[str, Any], output_dir: Path, predicted_rang
 
 
 def _waveform_operating_points(link: LinkModel, result: Any, cfg: Mapping[str, Any]) -> list[tuple[str, int]]:
+    """Choose representative waveform channels without assuming all S/C/L bands exist.
+
+    Smoke runs intentionally use a reduced wavelength subset for speed.  That
+    subset can contain only C-band channels, so blindly calling ``argmax`` on an
+    empty S- or L-band slice aborts the run.  Publication/full runs still produce
+    S/C/L operating points when the grid contains them; reduced runs skip absent
+    bands and record whatever bands are actually present.
+    """
     points: list[tuple[str, int]] = []
     acquisition_threshold = float(cfg["waveform"]["acquisition_snr_threshold_db"])
+    bands = np.asarray(link.grid.bands, dtype=str)
+    gsnr_db = np.asarray(result.gsnr_db, dtype=float)
+
+    if bands.shape[0] != gsnr_db.shape[0]:
+        raise ValueError(
+            f"Grid/result length mismatch in waveform selection: "
+            f"{bands.shape[0]} bands for {gsnr_db.shape[0]} GSNR values"
+        )
+
+    missing_bands: list[str] = []
     for band in ("S", "C", "L"):
-        indices = np.flatnonzero(np.asarray(link.grid.bands) == band)
-        values = result.gsnr_db[indices]
+        indices = np.flatnonzero(np.char.upper(bands.astype(str)) == band)
+        if indices.size:
+            finite = np.isfinite(gsnr_db[indices])
+            indices = indices[finite]
+        if indices.size == 0:
+            missing_bands.append(band)
+            continue
+
+        values = gsnr_db[indices]
         high = int(indices[np.argmax(values)])
         near = int(indices[np.argmin(np.abs(values - max(acquisition_threshold, 10.0)))])
         low = int(indices[np.argmin(values)])
         points.extend([("high_margin", high), ("near_threshold", near), ("below_threshold", low)])
+
+    if not points:
+        finite_indices = np.flatnonzero(np.isfinite(gsnr_db))
+        if finite_indices.size == 0:
+            raise ValueError("No finite GSNR values are available for waveform validation")
+        values = gsnr_db[finite_indices]
+        high = int(finite_indices[np.argmax(values)])
+        near = int(finite_indices[np.argmin(np.abs(values - max(acquisition_threshold, 10.0)))])
+        low = int(finite_indices[np.argmin(values)])
+        points.extend([("high_margin", high), ("near_threshold", near), ("below_threshold", low)])
+
+    if missing_bands and str(cfg.get("run", {}).get("mode", "debug")) != "publication":
+        print(
+            "[ISRS-SCL] waveform_validation: reduced grid does not contain "
+            f"{','.join(missing_bands)} band channel(s); validating present band(s) only.",
+            flush=True,
+        )
     return points
 
 

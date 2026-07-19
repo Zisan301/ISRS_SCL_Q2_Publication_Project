@@ -1,0 +1,18 @@
+{
+  "acceptance_reason": "Rejected all candidates. linear_tilt_-12.0: Rejected: failed band_feasible.",
+  "accepted": false,
+  "feasibility": {},
+  "initial_objective": 12.566191509652402,
+  "optimized_objective": 12.566191509652402,
+  "robust_summary": {
+    "ci95_high": 0.0,
+    "ci95_low": 0.0,
+    "cvar_lower": 0.0,
+    "mean": 0.0,
+    "median": 0.0,
+    "probability_positive": 0.0,
+    "samples": 4.0,
+    "worst_case": 0.0
+  },
+  "robust_training_hash": "fa1cba3faeb4f36349c0c7c9c87b7a7325ca9d24aaa68f9e04b6cbd9d300e8c8"
+}
