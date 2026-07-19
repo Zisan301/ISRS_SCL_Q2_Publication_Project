@@ -85,6 +85,25 @@ def gmi_from_llrs(bits: np.ndarray, llrs: np.ndarray, *, optimize_scale: bool = 
     return float(_gmi_for_scale(bits, llrs, 1.0))
 
 
+def optimized_gmi_from_llrs(bits: np.ndarray, llrs: np.ndarray) -> tuple[float, float, float]:
+    """Return raw GMI, nonnegative-scale optimized GMI, and the LLR scale.
+
+    This restores the historical repository API used by ``tests/test_metrics_gmi.py``.
+    The raw value is evaluated at scale 1.0.  The optimized value is maximized over
+    a nonnegative decoder scale and clipped to the valid DP-16QAM range [0, 4].
+    """
+
+    raw = float(_gmi_for_scale(bits, llrs, 1.0))
+    result = minimize_scalar(lambda x: -_gmi_for_scale(bits, llrs, x), bounds=(0.0, 8.0), method="bounded")
+    if result.success and np.isfinite(result.fun):
+        optimized = -float(result.fun)
+        scale = max(0.0, float(result.x))
+    else:
+        optimized = raw
+        scale = 1.0
+    return raw, float(np.clip(optimized, 0.0, 4.0)), scale
+
+
 def _wilson_interval(errors: int, total: int, z: float = 1.959963984540054) -> tuple[float, float]:
     if total <= 0:
         return float("nan"), float("nan")
@@ -186,7 +205,7 @@ def sample_metrics_16qam(
         "n_bits": float(n_bits), "n_symbols": float(transmitted.size),
         "q_factor_db": float(q_factor_db_from_ber(max(ber, 0.5 / max(n_bits, 1)))),
         "gmi_bits_per_2d_symbol_per_pol": float(gmi), "gmi_raw_bits_per_2d_symbol_per_pol": raw_gmi,
-        "gmi_llr_scale": float(llr_scale), "gmi_was_clipped": 0.0, "ngmi": float(gmi / 4.0),
+        "gmi_llr_scale": float(llr_scale), "gmi_scale": float(llr_scale), "gmi_was_clipped": 0.0, "ngmi": float(gmi / 4.0),
         "noise_variance": noise_variance,
         "complex_gain_real": float(np.real(calibration_gain)), "complex_gain_imag": float(np.imag(calibration_gain)),
         "payload_gain_was_fitted": float(calibration_gain is not None and allow_payload_fit),

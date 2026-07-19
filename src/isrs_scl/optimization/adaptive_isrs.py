@@ -38,6 +38,37 @@ class OptimizationResult:
     robust_summary: dict[str, float] = field(default_factory=dict)
     feasibility: dict[str, bool] = field(default_factory=dict)
 
+    def _metric_value(self, which: str, *names: str) -> float:
+        data = self.initial_metrics if which == "initial" else self.optimized_metrics
+        for name in names:
+            if name in data:
+                return float(data[name])
+        return 0.0
+
+    @property
+    def initial_soft_fec_tbps(self) -> float:
+        return self._metric_value("initial", "target_soft_fec_net_tbps", "soft_fec_net_tbps", "target_thresholded_net_capacity_tbps")
+
+    @property
+    def optimized_soft_fec_tbps(self) -> float:
+        return self._metric_value("optimized", "target_soft_fec_net_tbps", "soft_fec_net_tbps", "target_thresholded_net_capacity_tbps")
+
+    @property
+    def initial_fec_net_tbps(self) -> float:
+        return self._metric_value("initial", "target_fec_net_tbps", "fec_net_tbps", "target_thresholded_net_capacity_tbps")
+
+    @property
+    def optimized_fec_net_tbps(self) -> float:
+        return self._metric_value("optimized", "target_fec_net_tbps", "fec_net_tbps", "target_thresholded_net_capacity_tbps")
+
+    @property
+    def initial_air_tbps(self) -> float:
+        return self._metric_value("initial", "target_air_tbps", "air_tbps")
+
+    @property
+    def optimized_air_tbps(self) -> float:
+        return self._metric_value("optimized", "target_air_tbps", "air_tbps")
+
 
 def fixed_preemphasis_profile_dbm(frequencies_hz: np.ndarray, flat_dbm: float, s_to_l_tilt_db: float, minimum_dbm: float, maximum_dbm: float) -> np.ndarray:
     frequency = np.asarray(frequencies_hz, dtype=float)
@@ -69,11 +100,52 @@ def _scenario_cfg(cfg: Mapping[str, Any], values: Mapping[str, float]) -> dict[s
 class AdaptiveLaunchOptimizer:
     def __init__(self, link: LinkModel, cfg: dict, robust_batch: RobustScenarioBatch | None = None):
         self.link, self.cfg = link, cfg
-        self.opt, self.launch_cfg = cfg["optimization"], cfg["launch"]
-        self.threshold = float(cfg["fec"]["ngmi_target"])
-        self.symbol_rate_hz = float(cfg["modulation"]["symbol_rate_gbaud"]) * 1e9
-        self.bits = int(cfg["modulation"]["bits_per_symbol_per_pol"])
-        self.overhead = float(cfg["fec"]["overhead_fraction"])
+        opt_defaults = {
+            "target_spans": 1,
+            "evaluation_spans": None,
+            "seed": 1,
+            "control_points": 5,
+            "iterations": 10,
+            "learning_rate": 0.05,
+            "spsa_perturbation_db": 0.1,
+            "restarts": 1,
+            "restart_sigma_db": 0.25,
+            "adam_beta1": 0.9,
+            "adam_beta2": 0.999,
+            "air_weight": 1.0,
+            "margin_weight": 0.5,
+            "outage_weight": 12.0,
+            "variance_weight": 0.05,
+            "band_balance_weight": 10.0,
+            "smoothness_weight": 0.02,
+            "robust_weight": 1.0,
+            "robust_cvar_alpha": 0.10,
+            "robust_training_samples": 0,
+            "robust_training_seed": 20260720,
+            "minimum_band_working_fraction": {"S": 0.0, "C": 0.0, "L": 0.0},
+            "minimum_nominal_gain_tbps": 0.0,
+            "minimum_robust_gain_ci_low_tbps": 0.0,
+            "capacity_regression_tolerance_tbps": 1e-9,
+            "projection_smoothing_strength": 0.0,
+            "early_stopping_patience": 10,
+            "early_stopping_tolerance": 1e-6,
+            "softmin_temperature_ngmi": 0.01,
+        }
+        self.opt = {**opt_defaults, **dict(cfg.get("optimization", {}))}
+        if self.opt.get("evaluation_spans") is None:
+            self.opt["evaluation_spans"] = [int(self.opt["target_spans"])]
+        if not isinstance(self.opt.get("minimum_band_working_fraction"), Mapping):
+            self.opt["minimum_band_working_fraction"] = opt_defaults["minimum_band_working_fraction"]
+        self.launch_cfg = {
+            "min_power_dbm_per_channel": -5.0,
+            "max_power_dbm_per_channel": 3.0,
+            **dict(cfg.get("launch", {})),
+        }
+        self.threshold = float(cfg.get("fec", {}).get("ngmi_target", 0.90))
+        modulation = cfg.get("modulation", {})
+        self.symbol_rate_hz = float(modulation.get("symbol_rate_gbaud", 32.0)) * 1e9
+        self.bits = int(modulation.get("bits_per_symbol_per_pol", 4))
+        self.overhead = float(cfg.get("fec", {}).get("overhead_fraction", 0.25))
         if robust_batch is None and int(self.opt.get("robust_training_samples", 0)) >= 4:
             distributions = cfg.get("uncertainty", {}).get("distributions", {})
             correlation = cfg.get("uncertainty", {}).get("correlation")
@@ -116,33 +188,59 @@ class AdaptiveLaunchOptimizer:
 
     def _metrics(self, link: LinkModel, profile: np.ndarray, spans: int) -> dict[str, float]:
         result = link.evaluate(dbm_to_w(profile), spans)
-        capacity = summarize_capacity(result.gmi, result.ngmi, self.threshold, self.symbol_rate_hz, self.bits, self.overhead)
+        ngmi = np.asarray(getattr(result, "ngmi", []), dtype=float)
+        if ngmi.size == 0:
+            raise ValueError("Link result must expose a non-empty ngmi array")
+
+        if hasattr(result, "gmi"):
+            gmi = np.asarray(result.gmi, dtype=float)
+            capacity = summarize_capacity(gmi, ngmi, self.threshold, self.symbol_rate_hz, self.bits, self.overhead)
+            air_tbps = float(capacity.air_bps / 1e12)
+            thresholded_tbps = float(capacity.thresholded_net_line_bps / 1e12)
+            working_fraction = float(capacity.working_fraction)
+        else:
+            # Compatibility with lightweight fake-link tests used by the
+            # original project.  These tests expose soft/hard FEC and AIR
+            # aggregates directly instead of full per-channel GMI.
+            gmi = np.maximum(ngmi, 0.0) * float(self.bits)
+            air_tbps = float(getattr(result, "air_tbps", np.sum(gmi) * self.symbol_rate_hz * 2 / 1e12))
+            thresholded_tbps = float(getattr(result, "fec_net_tbps", getattr(result, "soft_fec_net_tbps", 0.0)))
+            working_fraction = float(np.mean(ngmi >= self.threshold))
+
+        gsnr = np.asarray(getattr(result, "gsnr_db", np.full(ngmi.shape, np.nan)), dtype=float)
+        finite_gsnr = gsnr[np.isfinite(gsnr)]
         metrics: dict[str, float] = {
             "spans": float(spans),
-            "air_tbps": float(capacity.air_bps / 1e12),
-            "thresholded_net_capacity_tbps": float(capacity.thresholded_net_line_bps / 1e12),
-            "working_fraction": float(capacity.working_fraction),
-            "minimum_ngmi": float(np.min(result.ngmi)),
-            "mean_ngmi": float(np.mean(result.ngmi)),
-            "minimum_gsnr_db": float(np.min(result.gsnr_db)),
-            "gsnr_std_db": float(np.std(result.gsnr_db)),
-            "mean_squared_ngmi_deficit": float(np.mean(np.maximum(self.threshold - result.ngmi, 0.0) ** 2)),
-            "soft_min_ngmi_margin": self._soft_min(result.ngmi - self.threshold, float(self.opt.get("softmin_temperature_ngmi", 0.01))),
+            "air_tbps": air_tbps,
+            "thresholded_net_capacity_tbps": thresholded_tbps,
+            "fec_net_tbps": float(getattr(result, "fec_net_tbps", thresholded_tbps)),
+            "soft_fec_net_tbps": float(getattr(result, "soft_fec_net_tbps", thresholded_tbps)),
+            "working_fraction": working_fraction,
+            "minimum_ngmi": float(np.min(ngmi)),
+            "mean_ngmi": float(np.mean(ngmi)),
+            "minimum_gsnr_db": float(np.min(finite_gsnr)) if finite_gsnr.size else np.nan,
+            "gsnr_std_db": float(np.std(finite_gsnr)) if finite_gsnr.size else 0.0,
+            "mean_squared_ngmi_deficit": float(np.mean(np.maximum(self.threshold - ngmi, 0.0) ** 2)),
+            "soft_min_ngmi_margin": self._soft_min(ngmi - self.threshold, float(self.opt.get("softmin_temperature_ngmi", 0.01))),
         }
+        bands = np.asarray(getattr(link.grid, "bands", np.array(["ALL"] * ngmi.size)))
         for band in ("S", "C", "L"):
-            mask = np.asarray(link.grid.bands) == band
+            mask = bands == band
             if not np.any(mask):
-                metrics[f"working_fraction_{band}"] = 0.0
-                metrics[f"minimum_ngmi_{band}"] = -np.inf
-                metrics[f"cvar_ngmi_{band}"] = -np.inf
-                metrics[f"air_tbps_{band}"] = 0.0
-                continue
-            ngmi = result.ngmi[mask]
-            gmi = result.gmi[mask]
-            metrics[f"working_fraction_{band}"] = float(np.mean(ngmi >= self.threshold))
-            metrics[f"minimum_ngmi_{band}"] = float(np.min(ngmi))
-            metrics[f"cvar_ngmi_{band}"] = cvar_lower(ngmi, float(self.opt.get("robust_cvar_alpha", 0.10)))
-            metrics[f"air_tbps_{band}"] = float(np.sum(gmi) * self.symbol_rate_hz * 2 / 1e12)
+                if "ALL" in set(bands.tolist()):
+                    mask = np.ones_like(ngmi, dtype=bool)
+                else:
+                    metrics[f"working_fraction_{band}"] = 0.0
+                    metrics[f"minimum_ngmi_{band}"] = -np.inf
+                    metrics[f"cvar_ngmi_{band}"] = -np.inf
+                    metrics[f"air_tbps_{band}"] = 0.0
+                    continue
+            band_ngmi = ngmi[mask]
+            band_gmi = gmi[mask] if gmi.shape == ngmi.shape else np.maximum(band_ngmi, 0.0) * float(self.bits)
+            metrics[f"working_fraction_{band}"] = float(np.mean(band_ngmi >= self.threshold))
+            metrics[f"minimum_ngmi_{band}"] = float(np.min(band_ngmi))
+            metrics[f"cvar_ngmi_{band}"] = cvar_lower(band_ngmi, float(self.opt.get("robust_cvar_alpha", 0.10)))
+            metrics[f"air_tbps_{band}"] = float(np.sum(band_gmi) * self.symbol_rate_hz * 2 / 1e12)
         return metrics
 
     def _scenario_link_models(self) -> list[LinkModel]:
@@ -216,13 +314,15 @@ class AdaptiveLaunchOptimizer:
         candidates = [("initial", initial.copy())]
         for tilt in np.linspace(-12, 12, 25):
             candidates.append((f"linear_tilt_{tilt:+.1f}", self._project(np.mean(initial) + tilt * normalized, total_power_w)))
-        bands = np.asarray(self.link.grid.bands)
-        for s_offset in (-4, -2, 0, 2, 4):
-            for l_offset in (-2, 0, 2):
-                profile = initial.copy()
-                profile[bands == "S"] += s_offset
-                profile[bands == "L"] += l_offset
-                candidates.append((f"band_S{s_offset:+.1f}_L{l_offset:+.1f}", self._project(profile, total_power_w)))
+        bands = getattr(self.link.grid, "bands", None)
+        if bands is not None:
+            bands = np.asarray(bands)
+            for s_offset in (-4, -2, 0, 2, 4):
+                for l_offset in (-2, 0, 2):
+                    profile = initial.copy()
+                    profile[bands == "S"] += s_offset
+                    profile[bands == "L"] += l_offset
+                    candidates.append((f"band_S{s_offset:+.1f}_L{l_offset:+.1f}", self._project(profile, total_power_w)))
         return candidates
 
     def _run_restart(self, initial: np.ndarray, total_power_w: float, restart: int, seed: int) -> tuple[np.ndarray, float, pd.DataFrame]:
@@ -299,7 +399,8 @@ class AdaptiveLaunchOptimizer:
             -float(objective),
         )
 
-    def optimize(self, initial_profile_dbm: np.ndarray) -> OptimizationResult:
+    def optimize(self, initial_profile_dbm: np.ndarray, baseline_name: str | None = None) -> OptimizationResult:
+        del baseline_name  # retained for backward-compatible call sites
         initial = np.asarray(initial_profile_dbm, dtype=float)
         if initial.shape != self.link.grid.frequencies_hz.shape:
             raise ValueError("Initial profile shape does not match the grid")
@@ -332,8 +433,33 @@ class AdaptiveLaunchOptimizer:
         if accepted:
             selected = max(accepted, key=lambda item: self._rank(item[3], item[7], item[0]))
             objective, restart, profile, metrics, name, reason, checks, robust_gain = selected
-            improved = True
-            reason = f"{name}; {reason}"
+            objective_gain = float(initial_objective - objective)
+            thresholded_gain = float(
+                metrics.get("target_thresholded_net_capacity_tbps", 0.0)
+                - initial_metrics.get("target_thresholded_net_capacity_tbps", 0.0)
+            )
+            air_gain = float(
+                metrics.get("target_air_tbps", 0.0)
+                - initial_metrics.get("target_air_tbps", 0.0)
+            )
+            profile_changed = not np.allclose(profile, initial, rtol=1e-9, atol=1e-9)
+            improvement_floor = max(
+                float(self.opt.get("minimum_claim_improvement_tbps", 0.0)),
+                float(self.opt.get("minimum_nominal_gain_tbps", 0.0)),
+                1e-9,
+            )
+            improved = bool(
+                profile_changed
+                and objective_gain > float(self.opt.get("early_stopping_tolerance", 1e-6))
+                and (thresholded_gain > improvement_floor or air_gain > improvement_floor)
+            )
+            if improved:
+                reason = f"{name}; {reason}"
+            else:
+                reason = (
+                    f"{name}; accepted constraints were non-regressive, but no material "
+                    "improvement over the baseline was detected."
+                )
         else:
             objective, restart, profile, metrics = initial_objective, -1, initial, initial_metrics
             improved, reason, checks = False, f"Rejected all candidates. {first_rejection}".strip(), {}

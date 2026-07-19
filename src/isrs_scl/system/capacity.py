@@ -50,6 +50,53 @@ class CapacityMetrics:
         }
 
 
+@dataclass(frozen=True)
+class GMIThroughputResult:
+    """Throughput summary produced directly from per-channel GMI values.
+
+    This class restores the historical ``throughput_from_gmi`` API expected by
+    the repository tests while keeping AIR and hard-FEC line rate separate.
+    """
+
+    air_bps: float
+    fec_net_bps: float
+    soft_fec_net_bps: float
+    working_channels: int
+    working_fraction: float
+    mean_ngmi: float
+    minimum_ngmi: float
+
+    @property
+    def air_tbps(self) -> float:
+        return self.air_bps / 1e12
+
+    @property
+    def fec_net_tbps(self) -> float:
+        return self.fec_net_bps / 1e12
+
+    @property
+    def soft_fec_net_tbps(self) -> float:
+        return self.soft_fec_net_bps / 1e12
+
+    def as_dict(self) -> dict[str, float | int]:
+        return {
+            "air_bps": self.air_bps,
+            "fec_net_bps": self.fec_net_bps,
+            "soft_fec_net_bps": self.soft_fec_net_bps,
+            "air_tbps": self.air_tbps,
+            "fec_net_tbps": self.fec_net_tbps,
+            "soft_fec_net_tbps": self.soft_fec_net_tbps,
+            "working_channels": self.working_channels,
+            "working_fraction": self.working_fraction,
+            "mean_ngmi": self.mean_ngmi,
+            "minimum_ngmi": self.minimum_ngmi,
+        }
+
+
+# Backward-compatible alias used by older scripts/tests.
+ThroughputFromGMIResult = GMIThroughputResult
+
+
 def line_rate_capacity(
     n_channels: int,
     symbol_rate_baud: float,
@@ -121,6 +168,64 @@ def thresholded_net_capacity_bps(
         fec_overhead_fraction,
         polarizations,
     ).net_bps
+
+
+def throughput_from_gmi(
+    gmi_bits_per_2d_symbol_per_pol: np.ndarray,
+    *,
+    symbol_rate_baud: float,
+    bits_per_symbol_per_pol: int,
+    fec_overhead_fraction: float,
+    ngmi_threshold: float = 0.90,
+    soft_transition: float = 0.01,
+    polarizations: int = 2,
+) -> GMIThroughputResult:
+    """Compute AIR plus hard/soft FEC-qualified throughput from GMI.
+
+    The historical tests import this function directly.  It intentionally keeps
+    AIR separate from hard-FEC throughput:
+
+    * ``air_bps`` = sum(GMI) * symbol_rate * polarizations.
+    * ``fec_net_bps`` = full net line rate only for channels whose NGMI meets
+      the configured threshold.
+    * ``soft_fec_net_bps`` = a smooth logistic utility around the threshold for
+      optimization diagnostics, not a publishable hard-FEC claim.
+    """
+
+    gmi = np.asarray(gmi_bits_per_2d_symbol_per_pol, dtype=float)
+    if gmi.ndim != 1 or gmi.size == 0:
+        raise ValueError("GMI must be a non-empty one-dimensional array")
+    if not np.all(np.isfinite(gmi)):
+        raise ValueError("GMI contains non-finite values")
+    if bits_per_symbol_per_pol <= 0:
+        raise ValueError("bits_per_symbol_per_pol must be positive")
+
+    max_bits = float(bits_per_symbol_per_pol)
+    gmi = np.clip(gmi, 0.0, max_bits)
+    ngmi = gmi / max_bits
+    working = ngmi >= float(ngmi_threshold)
+    channel_net_bps = line_rate_capacity(
+        1,
+        symbol_rate_baud,
+        bits_per_symbol_per_pol,
+        fec_overhead_fraction,
+        polarizations,
+    ).net_bps
+    if soft_transition <= 0:
+        soft_weights = working.astype(float)
+    else:
+        x = np.clip((ngmi - float(ngmi_threshold)) / float(soft_transition), -700.0, 700.0)
+        soft_weights = 1.0 / (1.0 + np.exp(-x))
+
+    return GMIThroughputResult(
+        air_bps=achievable_information_rate_bps(gmi, symbol_rate_baud, polarizations, max_bits),
+        fec_net_bps=float(np.count_nonzero(working) * channel_net_bps),
+        soft_fec_net_bps=float(np.sum(soft_weights) * channel_net_bps),
+        working_channels=int(np.count_nonzero(working)),
+        working_fraction=float(np.mean(working)),
+        mean_ngmi=float(np.mean(ngmi)),
+        minimum_ngmi=float(np.min(ngmi)),
+    )
 
 
 def summarize_capacity(

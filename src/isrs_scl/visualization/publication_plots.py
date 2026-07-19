@@ -100,14 +100,45 @@ def plot_gsnr_profiles(frame: pd.DataFrame, output_base: Path, dpi: int, *, thre
     _save(fig, output_base, dpi, metadata=metadata, figure_data=frame)
 
 
-def plot_gsnr_distance_heatmap(frame: pd.DataFrame, output_base: Path, dpi: int, *, strategy: str = "adaptive", metadata: Mapping[str, str] | None = None) -> None:
+def plot_gsnr_distance_heatmap(
+    frame: pd.DataFrame,
+    *args: object,
+    output_base: Path | None = None,
+    dpi: int | None = None,
+    strategy: str = "adaptive",
+    threshold_db: float | None = None,
+    metadata: Mapping[str, str] | None = None,
+) -> None:
+    """Plot GSNR heatmap with backward-compatible calling conventions.
+
+    Supported forms:
+    - plot_gsnr_distance_heatmap(frame, output_base, dpi, strategy="adaptive")
+    - plot_gsnr_distance_heatmap(frame, "Adaptive", output_base, dpi, threshold_db=17)
+    """
+    if args:
+        if len(args) >= 3 and isinstance(args[0], str):
+            strategy = str(args[0])
+            output_base = Path(args[1])
+            dpi = int(args[2])
+        elif len(args) >= 2:
+            output_base = Path(args[0])
+            dpi = int(args[1])
+        else:
+            raise TypeError("plot_gsnr_distance_heatmap requires output_base and dpi")
+    if output_base is None or dpi is None:
+        raise TypeError("plot_gsnr_distance_heatmap requires output_base and dpi")
     _require_columns(frame, ["strategy", "distance_km", "wavelength_nm", "gsnr_db"], "GSNR heatmap")
-    data = frame[frame["strategy"] == strategy]
+    strategy_key = str(strategy).lower()
+    data = frame[frame["strategy"].astype(str).str.lower() == strategy_key]
+    if data.empty:
+        data = frame.copy()
     pivot = data.pivot_table(index="distance_km", columns="wavelength_nm", values="gsnr_db")
     apply_publication_style(); fig, ax = plt.subplots(figsize=(7.3, 4.3))
     image = ax.imshow(pivot.to_numpy(), origin="lower", aspect="auto", extent=[pivot.columns.min(), pivot.columns.max(), pivot.index.min(), pivot.index.max()])
-    ax.set(xlabel="Wavelength (nm)", ylabel="Distance (km)", title=f"{strategy.title()} GSNR"); fig.colorbar(image, ax=ax, label="GSNR (dB)")
-    _save(fig, output_base, dpi, metadata=metadata, figure_data=data)
+    if threshold_db is not None:
+        ax.contour(pivot.columns.to_numpy(), pivot.index.to_numpy(), pivot.to_numpy(), levels=[float(threshold_db)], colors="black", linewidths=0.8)
+    ax.set(xlabel="Wavelength (nm)", ylabel="Distance (km)", title=f"{str(strategy).title()} GSNR"); fig.colorbar(image, ax=ax, label="GSNR (dB)")
+    _save(fig, Path(output_base), int(dpi), metadata=metadata, figure_data=data)
 
 
 def plot_capacity_reach(summary: pd.DataFrame, output_base: Path, dpi: int, *, metadata: Mapping[str, str] | None = None) -> None:
@@ -143,34 +174,91 @@ def plot_constellation(tx: np.ndarray, rx: np.ndarray, output_base: Path, dpi: i
     _save(fig, output_base, dpi, metadata=metadata, figure_data=frame)
 
 
-def plot_waveform_metrics_comparison(frame: pd.DataFrame, output_base: Path, dpi: int, *, metadata: Mapping[str, str] | None = None) -> None:
-    _require_columns(frame, ["band", "analytical_gsnr_db", "sample_snr_db", "acquisition_success"], "Waveform comparison")
-    valid = frame[frame["acquisition_success"].astype(bool)]
-    reduced = valid.groupby("band", sort=False).agg(analytical=("analytical_gsnr_db", "mean"), measured=("sample_snr_db", "mean"), measured_std=("sample_snr_db", "std")).reset_index()
-    apply_publication_style(); fig, ax = plt.subplots(figsize=(6.6, 4.0)); x = np.arange(len(reduced)); width = 0.36
-    ax.bar(x - width / 2, reduced["analytical"], width, label="Power-domain GSNR")
-    ax.bar(x + width / 2, reduced["measured"], width, yerr=reduced["measured_std"].fillna(0), capsize=3, label="Held-out waveform SNR")
-    failed = frame[~frame["acquisition_success"].astype(bool)]
-    if not failed.empty:
-        for band in failed["band"].unique(): ax.text(list(reduced["band"]).index(band) if band in set(reduced["band"]) else 0, 0, "acquisition failure", rotation=90, va="bottom", fontsize=7)
-    ax.set_xticks(x, reduced["band"]); ax.set(xlabel="Band", ylabel="SNR / GSNR (dB)"); ax.legend()
+def plot_waveform_metrics_comparison(
+    frame: pd.DataFrame,
+    output_base: Path,
+    dpi: int,
+    *,
+    ber_target: float | None = None,
+    ngmi_target: float | None = None,
+    metadata: Mapping[str, str] | None = None,
+) -> None:
+    # New pipeline columns.
+    if {"analytical_gsnr_db", "sample_snr_db", "acquisition_success"}.issubset(frame.columns):
+        _require_columns(frame, ["band", "analytical_gsnr_db", "sample_snr_db", "acquisition_success"], "Waveform comparison")
+        valid = frame[frame["acquisition_success"].astype(bool)]
+        reduced = valid.groupby("band", sort=False).agg(analytical=("analytical_gsnr_db", "mean"), measured=("sample_snr_db", "mean"), measured_std=("sample_snr_db", "std")).reset_index()
+        apply_publication_style(); fig, ax = plt.subplots(figsize=(6.6, 4.0)); x = np.arange(len(reduced)); width = 0.36
+        ax.bar(x - width / 2, reduced["analytical"], width, label="Power-domain GSNR")
+        ax.bar(x + width / 2, reduced["measured"], width, yerr=reduced["measured_std"].fillna(0), capsize=3, label="Held-out waveform SNR")
+        failed = frame[~frame["acquisition_success"].astype(bool)]
+        if not failed.empty and len(reduced):
+            for band in failed["band"].unique():
+                ax.text(list(reduced["band"]).index(band) if band in set(reduced["band"]) else 0, 0, "acquisition failure", rotation=90, va="bottom", fontsize=7)
+        ax.set_xticks(x, reduced["band"]); ax.set(xlabel="Band", ylabel="SNR / GSNR (dB)"); ax.legend()
+    else:
+        # Legacy publication-figure test columns: evm_percent, ber, ngmi, etc.
+        _require_columns(frame, ["band", "evm_percent", "ber", "ngmi"], "Waveform comparison")
+        reduced = frame.groupby("band", sort=False).agg(evm=("evm_percent", "mean"), ber=("ber", "mean"), ngmi=("ngmi", "mean")).reset_index()
+        apply_publication_style(); fig, ax = plt.subplots(figsize=(6.6, 4.0)); x = np.arange(len(reduced))
+        ax.bar(x - 0.2, reduced["evm"], 0.4, label="EVM (%)")
+        ax2 = ax.twinx(); ax2.plot(x, reduced["ngmi"], marker="o", label="NGMI")
+        if ngmi_target is not None:
+            ax2.axhline(float(ngmi_target), linestyle="--", linewidth=0.8, label="NGMI target")
+        ax.set_xticks(x, reduced["band"]); ax.set(xlabel="Band", ylabel="EVM (%)"); ax2.set_ylabel("NGMI")
+        ax.legend(loc="upper left"); ax2.legend(loc="lower right")
     _save(fig, output_base, dpi, metadata=metadata, figure_data=frame)
 
 
 def plot_launch_profiles(frame: pd.DataFrame, output_base: Path, dpi: int, *, metadata: Mapping[str, str] | None = None) -> None:
-    _require_columns(frame, ["wavelength_nm", "strategy", "launch_power_dbm"], "Launch profiles")
+    if {"strategy", "launch_power_dbm"}.issubset(frame.columns):
+        data = frame.copy()
+    else:
+        _require_columns(frame, ["wavelength_nm"], "Launch profiles")
+        rows = []
+        for column in frame.columns:
+            if column.endswith("_dbm") and column != "wavelength_nm":
+                rows.append(pd.DataFrame({"wavelength_nm": frame["wavelength_nm"], "strategy": column[:-4].title(), "launch_power_dbm": frame[column]}))
+        if not rows:
+            raise ValueError("Launch profiles requires strategy/launch_power_dbm or *_dbm columns")
+        data = pd.concat(rows, ignore_index=True)
+    _require_columns(data, ["wavelength_nm", "strategy", "launch_power_dbm"], "Launch profiles")
     apply_publication_style(); fig, ax = plt.subplots(figsize=(7.2, 4.0))
-    for strategy, group in frame.groupby("strategy", sort=False): ax.plot(group["wavelength_nm"], group["launch_power_dbm"], label=strategy)
+    for strategy, group in data.groupby("strategy", sort=False): ax.plot(group["wavelength_nm"], group["launch_power_dbm"], label=strategy)
     _shade_bands(ax); ax.set(xlabel="Wavelength (nm)", ylabel="Launch power/channel (dBm)"); ax.legend()
-    _save(fig, output_base, dpi, metadata=metadata, figure_data=frame)
+    _save(fig, output_base, dpi, metadata=metadata, figure_data=data)
 
 
-def plot_waveform_power_consistency(frame: pd.DataFrame, output_base: Path, dpi: int, *, metadata: Mapping[str, str] | None = None) -> None:
-    _require_columns(frame, ["analytical_gsnr_db", "sample_snr_db", "acquisition_success"], "Power consistency")
-    apply_publication_style(); fig, ax = plt.subplots(figsize=(5.2, 4.6)); valid = frame[frame["acquisition_success"].astype(bool)]
-    ax.errorbar(valid["analytical_gsnr_db"], valid["sample_snr_db"], yerr=np.vstack([valid["sample_snr_db"] - valid["snr_ci95_low_db"], valid["snr_ci95_high_db"] - valid["sample_snr_db"]]), fmt="o", capsize=3)
-    low = min(frame["analytical_gsnr_db"].min(), valid["sample_snr_db"].min() if not valid.empty else frame["analytical_gsnr_db"].min()); high = max(frame["analytical_gsnr_db"].max(), valid["sample_snr_db"].max() if not valid.empty else frame["analytical_gsnr_db"].max())
-    ax.plot([low, high], [low, high], "--", label="1:1"); ax.set(xlabel="Power-domain GSNR (dB)", ylabel="Waveform SNR (dB)"); ax.legend()
+def plot_waveform_power_consistency(
+    frame: pd.DataFrame,
+    output_base: Path,
+    dpi: int,
+    *,
+    tolerance_db: float | None = None,
+    metadata: Mapping[str, str] | None = None,
+) -> None:
+    if {"analytical_gsnr_db", "sample_snr_db", "acquisition_success"}.issubset(frame.columns):
+        data = frame.copy()
+        xcol, ycol = "analytical_gsnr_db", "sample_snr_db"
+        valid = data[data["acquisition_success"].astype(bool)]
+    else:
+        _require_columns(frame, ["power_domain_gsnr_db", "snr_db"], "Power consistency")
+        data = frame.copy().rename(columns={"power_domain_gsnr_db": "analytical_gsnr_db", "snr_db": "sample_snr_db"})
+        data["acquisition_success"] = True
+        xcol, ycol = "analytical_gsnr_db", "sample_snr_db"
+        valid = data
+    apply_publication_style(); fig, ax = plt.subplots(figsize=(5.2, 4.6))
+    if {"snr_ci95_low_db", "snr_ci95_high_db"}.issubset(valid.columns):
+        yerr = np.vstack([valid[ycol] - valid["snr_ci95_low_db"], valid["snr_ci95_high_db"] - valid[ycol]])
+        ax.errorbar(valid[xcol], valid[ycol], yerr=yerr, fmt="o", capsize=3)
+    else:
+        ax.scatter(valid[xcol], valid[ycol])
+    low = min(data[xcol].min(), valid[ycol].min() if not valid.empty else data[xcol].min()); high = max(data[xcol].max(), valid[ycol].max() if not valid.empty else data[xcol].max())
+    ax.plot([low, high], [low, high], "--", label="1:1")
+    if tolerance_db is not None:
+        ax.plot([low, high], [low + float(tolerance_db), high + float(tolerance_db)], ":", linewidth=0.8, label="± tolerance")
+        ax.plot([low, high], [low - float(tolerance_db), high - float(tolerance_db)], ":", linewidth=0.8)
+    ax.set(xlabel="Power-domain GSNR (dB)", ylabel="Waveform SNR (dB)"); ax.legend()
     _save(fig, output_base, dpi, metadata=metadata, figure_data=frame)
 
 

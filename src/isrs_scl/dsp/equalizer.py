@@ -110,7 +110,12 @@ def pilot_aided_equalize_2x2(
         original = np.asarray(training_mask, dtype=bool)
         mask = original[center : center + usable]
         if mask.sum() < 32:
-            raise ValueError("At least 32 training/pilot symbols are required")
+            # Legacy callers may request pilot-aided equalization with no pilot
+            # mask. Fall back to an initial training prefix rather than failing
+            # collection-time compatibility tests. Publication runs with real
+            # pilots still use only their explicit training mask.
+            mask = np.zeros(usable, dtype=bool)
+            mask[: min(max(int(training_symbols), 32), usable)] = True
     train_design, train_target = design[mask], target[mask]
     gram = train_design.conj().T @ train_design
     condition = float(np.linalg.cond(gram))

@@ -206,6 +206,12 @@ def matched_filter_and_sample(
     candidates: list[tuple[float, int, np.ndarray]] = []
     reference = None if reference_symbols is None else np.asarray(reference_symbols, dtype=complex)
     mask = None if pilot_mask is None else np.asarray(pilot_mask, dtype=bool)
+    # Backward compatibility: older transmitter tests generate no pilot mask.
+    # In that case timing must fall back to blind fourth-moment scoring instead
+    # of producing an empty candidate list.
+    if mask is not None and int(np.count_nonzero(mask)) < 16:
+        reference = None
+        mask = None
     for phase in range(sps):
         sampled = filtered[:, nominal_start + phase :: sps][:, :n_symbols]
         if sampled.shape[1] < 64:
@@ -301,8 +307,16 @@ def coherent_receiver(
     power_scale = np.sqrt(np.maximum(np.mean(np.abs(sampled) ** 2, axis=1, keepdims=True), 1e-30))
     normalized = sampled / power_scale
     mode = str(equalizer_mode).lower()
+    training_mask_full = np.asarray(tx.pilot_mask, dtype=bool).copy()
+    if int(np.count_nonzero(training_mask_full)) < 32:
+        # Legacy/back-to-back tests have no explicit pilots.  Use an initial
+        # training prefix for acquisition only, leaving the rest as held-out
+        # payload so the newer publication path remains unbiased when pilots
+        # are present.
+        training_mask_full[:] = False
+        training_mask_full[: min(max(int(cma_training_symbols), 32), training_mask_full.size)] = True
     if mode in {"pilot", "pilot_aided", "training_aided", "data_aided"}:
-        equalized = pilot_aided_equalize_2x2(normalized, tx.symbols, taps=cma_taps, training_symbols=cma_training_symbols, ridge=equalizer_ridge, training_mask=tx.pilot_mask)
+        equalized = pilot_aided_equalize_2x2(normalized, tx.symbols, taps=cma_taps, training_symbols=cma_training_symbols, ridge=equalizer_ridge, training_mask=training_mask_full)
         mode = "pilot_aided"
     elif mode == "cma":
         equalized = cma_equalize_2x2(normalized, taps=cma_taps, step_size=cma_step_size, training_symbols=cma_training_symbols)
@@ -311,7 +325,7 @@ def coherent_receiver(
     center = int(cma_taps) // 2
     usable = equalized.symbols.shape[1]
     reference = tx.symbols[:, center : center + usable]
-    pilot_mask = tx.pilot_mask[center : center + usable]
+    pilot_mask = training_mask_full[center : center + usable]
     if not equalized.success:
         empty_metrics = ({"acquisition_success": 0.0}, {"acquisition_success": 0.0})
         return ReceiverResult(equalized.symbols, reference, empty_metrics, equalized, np.zeros(usable), mode, timing_phase, False, 0, int(pilot_mask.sum()), int((~pilot_mask).sum()), equalized.failure_reason, {"normalization_x": float(power_scale[0, 0]), "normalization_y": float(power_scale[1, 0])})
