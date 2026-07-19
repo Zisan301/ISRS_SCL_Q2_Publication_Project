@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Mapping
 import json
+import sys
+import time
 
 import numpy as np
 import pandas as pd
@@ -102,19 +104,26 @@ def _prepare_cfg(cfg: dict[str, Any], grid_mode: str | None, smoke: bool, no_unc
         output["validation"]["minimum_optimizer_seeds"] = 2
         output["validation"]["minimum_uncertainty_holdout_samples"] = 4
         output["uncertainty"]["holdout_samples"] = 4
+        output["fec"]["b2b_snr_sweep_db"] = [8.0, 20.0, 4.0]
         output["output"]["png_dpi"] = min(int(output["output"]["png_dpi"]), 180)
     validate_config(output)
     return output
 
 
 def _stage(ctx: StudyContext, name: str, function: Callable[[], Any]) -> Any:
+    started = time.perf_counter()
+    print(f"[ISRS-SCL] START {name}", flush=True)
     try:
         value = function()
-        mark_stage(ctx.manifest, name, passed=True)
+        elapsed = time.perf_counter() - started
+        mark_stage(ctx.manifest, name, passed=True, details={"elapsed_seconds": round(elapsed, 3)})
+        print(f"[ISRS-SCL] DONE  {name} in {elapsed:.1f}s", flush=True)
         return value
     except Exception as exc:
-        mark_stage(ctx.manifest, name, passed=False, details={"error": f"{type(exc).__name__}: {exc}"})
+        elapsed = time.perf_counter() - started
+        mark_stage(ctx.manifest, name, passed=False, details={"error": f"{type(exc).__name__}: {exc}", "elapsed_seconds": round(elapsed, 3)})
         atomic_write_json(ctx.paths.metadata / "RUN_MANIFEST.failed.json", {key: value for key, value in ctx.manifest.items() if not key.startswith("_runtime_")})
+        print(f"[ISRS-SCL] FAILED {name} after {elapsed:.1f}s: {type(exc).__name__}: {exc}", file=sys.stderr, flush=True)
         raise
 
 
@@ -147,9 +156,13 @@ def _strategy_sweeps(link: LinkModel, profiles: Mapping[str, np.ndarray], cfg: M
 
 def _b2b_points(cfg: Mapping[str, Any], predicted_range: tuple[float, float] | None) -> np.ndarray:
     start, stop, step = map(float, cfg["fec"]["b2b_snr_sweep_db"])
-    if predicted_range is not None:
+    if predicted_range is not None and cfg.get("run", {}).get("mode") != "smoke":
         start = min(start, predicted_range[0] - 2.0)
         stop = max(stop, predicted_range[1] + 2.0)
+    if cfg.get("run", {}).get("mode") == "smoke":
+        # Smoke runs are for plumbing and API validation, not final receiver calibration.
+        # Keep enough points for monotone interpolation while avoiding a long B2B sweep.
+        return np.unique(np.round(np.array([start, 12.0, 16.0, stop], dtype=float), 6))
     coarse = np.arange(start, stop + step / 2, step)
     # Dense region around likely 16-QAM FEC transition.
     dense = np.arange(max(start, 6.0), min(stop, 18.0) + 0.25, 0.25)
@@ -158,7 +171,8 @@ def _b2b_points(cfg: Mapping[str, Any], predicted_range: tuple[float, float] | N
 
 def run_b2b_calibration(cfg: Mapping[str, Any], output_dir: Path, predicted_range: tuple[float, float] | None = None) -> tuple[pd.DataFrame, MonotoneReceiverCalibration]:
     points = _b2b_points(cfg, predicted_range)
-    repeats = max(int(cfg["waveform"].get("repeats_per_band", 3)), 3)
+    configured_repeats = int(cfg["waveform"].get("repeats_per_band", 3))
+    repeats = max(configured_repeats, 1 if cfg.get("run", {}).get("mode") == "smoke" else 3)
     rows = []
     n_symbols = int(cfg["waveform"]["pilot_symbols"] + cfg["waveform"]["payload_symbols"])
     symbol_rate = float(cfg["modulation"]["symbol_rate_gbaud"]) * 1e9
@@ -251,6 +265,7 @@ def run_publication_study(config_path: str | Path, grid_mode: str | None = None,
     cfg = _prepare_cfg(loaded, grid_mode, smoke, no_uncertainty)
     run_id = str(cfg["run"].get("run_id") or f"{cfg['run']['mode']}-{cfg['metadata']['random_seed']}")
     cfg["run"]["run_id"] = run_id
+    print(f"[ISRS-SCL] Run mode={cfg['run']['mode']} run_id={run_id}", flush=True)
     paths = prepare_run_directory(cfg["run"]["output_root"], run_id, overwrite=bool(cfg["run"].get("overwrite", False)))
     cfg["output"]["directory"], cfg["output"]["figure_directory"] = str(paths.results), str(paths.figures)
     validate_config(cfg, base_dir=Path(config_path).parent)

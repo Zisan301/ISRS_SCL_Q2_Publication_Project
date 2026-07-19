@@ -25,6 +25,29 @@ def _require_columns(frame: pd.DataFrame, columns: Iterable[str], name: str) -> 
         raise ValueError(f"{name} is missing columns {sorted(missing)}")
 
 
+_PDF_METADATA_KEYS = {"Title", "Author", "Subject", "Keywords", "Creator", "Producer", "CreationDate", "ModDate", "Trapped"}
+
+
+def _normalise_metadata(metadata: Mapping[str, object] | None) -> tuple[dict[str, str], dict[str, str]]:
+    """Return full PNG/JSON metadata and a PDF-safe subset.
+
+    Matplotlib's PDF backend rejects arbitrary info-dictionary keys such as
+    ``run_id``.  We keep those fields in the sidecar JSON and PNG metadata,
+    and encode the compact custom fields into the standard PDF ``Keywords``
+    entry so no warning is emitted.
+    """
+    full = {"Creator": "ISRS_SCL_Q2_Publication_Project"}
+    for key, value in dict(metadata or {}).items():
+        full[str(key)] = str(value)
+    pdf_meta = {key: value for key, value in full.items() if key in _PDF_METADATA_KEYS}
+    custom = {key: value for key, value in full.items() if key not in _PDF_METADATA_KEYS}
+    if custom:
+        encoded = json.dumps(custom, sort_keys=True, separators=(",", ":"))
+        existing = pdf_meta.get("Keywords", "")
+        pdf_meta["Keywords"] = f"{existing}; {encoded}" if existing else encoded
+    return full, pdf_meta
+
+
 def _save(fig: plt.Figure, base: Path, dpi: int, *, metadata: Mapping[str, str] | None = None, figure_data: pd.DataFrame | None = None) -> None:
     base = Path(base)
     base.parent.mkdir(parents=True, exist_ok=True)
@@ -33,12 +56,12 @@ def _save(fig: plt.Figure, base: Path, dpi: int, *, metadata: Mapping[str, str] 
         raise RuntimeError(f"Duplicate figure output name: {base}")
     _WRITTEN.add(resolved)
     fig.tight_layout()
-    meta = {"Creator": "ISRS_SCL_Q2_Publication_Project", **dict(metadata or {})}
-    fig.savefig(base.with_suffix(".png"), dpi=int(dpi), bbox_inches="tight", metadata=meta)
-    fig.savefig(base.with_suffix(".pdf"), bbox_inches="tight", metadata=meta)
+    full_meta, pdf_meta = _normalise_metadata(metadata)
+    fig.savefig(base.with_suffix(".png"), dpi=int(dpi), bbox_inches="tight", metadata=full_meta)
+    fig.savefig(base.with_suffix(".pdf"), bbox_inches="tight", metadata=pdf_meta)
     if figure_data is not None:
         figure_data.to_csv(base.with_name(base.name + "_data.csv"), index=False)
-    base.with_name(base.name + "_metadata.json").write_text(json.dumps(meta, indent=2, sort_keys=True), encoding="utf-8")
+    base.with_name(base.name + "_metadata.json").write_text(json.dumps(full_meta, indent=2, sort_keys=True), encoding="utf-8")
     plt.close(fig)
 
 

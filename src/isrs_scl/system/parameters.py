@@ -182,6 +182,15 @@ def migrate_config(raw: Mapping[str, Any]) -> dict[str, Any]:
     for old, new in aliases.items():
         if old in opt and new not in opt:
             opt[new] = opt.pop(old)
+        elif old in opt:
+            opt.pop(old)
+
+    # Legacy schema-1 key retained in old config_q2_final.yaml files.
+    # The schema-2 optimizer uses softmin_temperature_ngmi for NGMI-domain
+    # margins; the old dB-domain value has no safe one-to-one conversion.
+    # Drop it after migration so strict unknown-key validation still catches
+    # genuinely unsupported keys.
+    opt.pop("softmin_temperature_db", None)
     unc = cfg.setdefault("uncertainty", {})
     if "samples" in unc and "holdout_samples" not in unc:
         unc["holdout_samples"] = unc.pop("samples")
