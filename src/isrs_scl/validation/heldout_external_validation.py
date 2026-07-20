@@ -61,7 +61,7 @@ def _matched_gsnr(comparisons: pd.DataFrame) -> pd.DataFrame:
     matched = comparisons["matched"].astype(int) == 1
     data = comparisons[metric.eq("gsnr_db") & matched].copy()
     needed = ["wavelength_nm", "model_value", "reference_value", "residual"]
-    return data.dropna(subset=needed).reset_index(drop=True)
+    return data.dropna(subset=needed)
 
 
 def _fit_wavelength_linear(data: pd.DataFrame, center_wavelength_nm: float) -> WavelengthLinearCorrection:
@@ -101,9 +101,8 @@ def _leave_one_out_corrected(calibration: pd.DataFrame, center_wavelength_nm: fl
         correction = _fit_wavelength_linear(train, center_wavelength_nm)
         wavelength = [float(matched.loc[row_index, "wavelength_nm"])]
         predicted = float(correction.predict(wavelength)[0])
-        original_index = int(matched.loc[row_index].name)
-        output.loc[original_index, "loo_linear_predicted_residual_db"] = predicted
-        output.loc[original_index, "loo_linear_corrected_residual"] = (
+        output.loc[row_index, "loo_linear_predicted_residual_db"] = predicted
+        output.loc[row_index, "loo_linear_corrected_residual"] = (
             float(matched.loc[row_index, "residual"]) - predicted
         )
     return output
