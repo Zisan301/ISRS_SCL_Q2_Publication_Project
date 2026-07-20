@@ -1,0 +1,11 @@
+{
+  "correction": {
+    "center_wavelength_nm": 1550.0,
+    "intercept_db": 2.543253976730291,
+    "model": "wavelength_linear",
+    "residual_definition": "model_value - reference_value",
+    "slope_db_per_nm": -0.008742608622570414
+  },
+  "passed": true,
+  "reasons": []
+}
