@@ -1,0 +1,45 @@
+{
+  "input_comparisons": "runs\\q3-cband-external-only-2db-001\\external_validation_comparisons.csv",
+  "matched_rows": 9,
+  "center_wavelength_nm": 1550.0,
+  "residual_definition": "model_value - reference_value",
+  "raw": {
+    "n": 9,
+    "rmse_db": 1.761891849306184,
+    "mae_db": 1.612370721434968,
+    "bias_db": -1.612370721434968,
+    "max_abs_error_db": 2.7127300926392977
+  },
+  "global_constant_bias_correction": {
+    "residual_offset_db": -1.612370721434968,
+    "correction_rule": "corrected_model = model_value - residual_offset_db",
+    "metrics": {
+      "n": 9,
+      "rmse_db": 0.7102982087200039,
+      "mae_db": 0.6103287186181647,
+      "bias_db": -7.894919286223335e-16,
+      "max_abs_error_db": 1.1003593712043305
+    }
+  },
+  "linear_wavelength_bias_model": {
+    "formula": "predicted_residual_db = intercept_db + slope_db_per_nm * (wavelength_nm - center_wavelength_nm)",
+    "intercept_db": -1.7237455404583015,
+    "slope_db_per_nm": -0.06682537255668422,
+    "correction_rule": "corrected_model = model_value - predicted_residual_db",
+    "in_sample_metrics": {
+      "n": 9,
+      "rmse_db": 0.1820759978234323,
+      "mae_db": 0.14647617289668702,
+      "bias_db": 1.1842378929335002e-15,
+      "max_abs_error_db": 0.3276829664748817
+    },
+    "leave_one_out_metrics": {
+      "n": 9,
+      "rmse_db": 0.22820745820814706,
+      "mae_db": 0.18620479589034902,
+      "bias_db": -0.014085377521909316,
+      "max_abs_error_db": 0.43015492261192634
+    }
+  },
+  "interpretation": "If leave-one-out linear corrected RMSE is much lower than raw RMSE, the mismatch is dominated by a wavelength-dependent modeling/calibration trend. Treat this as calibration evidence only after validating on held-out data."
+}
