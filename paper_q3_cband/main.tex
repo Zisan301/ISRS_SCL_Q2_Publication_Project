@@ -1,0 +1,207 @@
+\documentclass[journal]{IEEEtran}
+
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+
+\sisetup{detect-all=true,per-mode=symbol}
+
+\begin{document}
+
+\title{A Reproducible GNPy-Assisted External Validation Workflow for ISRS-Aware GSNR Modeling in C-Band Coherent Optical Links}
+
+\author{Shahariar Alam Zisan%
+\thanks{Affiliation and contact information should be inserted before journal submission. The manuscript is prepared from the reproducible ISRS\_SCL\_Q2\_Publication\_Project codebase and the clean C-band evidence package generated on 20 July 2026.}%
+}
+
+\maketitle
+
+\begin{abstract}
+Ultra-wideband coherent optical-system studies increasingly require fast physical-layer models that can account for amplified spontaneous emission, nonlinear interference, and inter-channel stimulated Raman scattering. However, such models are only useful for design studies when their numerical outputs are traceable to independent reference calculations and when the validation scope is stated explicitly. This paper presents a reproducible C-band external-validation workflow for an ISRS-aware generalized signal-to-noise ratio model. A clean nine-point GNPy reference set is constructed for three C-band wavelengths, \SIlist{1535;1550;1560}{\nano\meter}, and three span counts, 1, 4, and 8, under a flat launch condition. The workflow performs strict row matching by launch strategy, span count, wavelength, metric, unit, and provenance, then reports raw model error and diagnostic bias models. The uncalibrated model achieves complete row coverage with a raw GSNR root-mean-square error of \SI{1.762}{\decibel} and a bias of \SI{-1.612}{\decibel} against GNPy. A global residual-offset diagnostic reduces the RMSE to \SI{0.710}{\decibel}. A wavelength-dependent residual diagnostic, validated with leave-one-out evaluation, further reduces the RMSE to \SI{0.228}{\decibel}. These results show that the remaining mismatch is systematic and dominated by a wavelength-dependent calibration trend rather than unmatched or random validation failure. The contribution is a transparent, reproducible validation package suitable for a preliminary C-band journal submission, while explicitly avoiding unsupported claims of full S+C+L validation or final physical calibration.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Coherent optical communication, C-band transmission, GNPy, Gaussian noise model, GSNR, ISRS, nonlinear interference, physical-layer validation.
+\end{IEEEkeywords}
+
+\section{Introduction}
+Coherent wavelength-division multiplexed systems are commonly evaluated through a hierarchy of models ranging from detailed split-step Fourier propagation to semi-analytical Gaussian-noise (GN) and enhanced GN formulations. The GN model and its extensions remain attractive because they provide a tractable way to estimate nonlinear interference and generalized signal-to-noise ratio (GSNR) in uncompensated coherent systems \cite{poggiolini2012gn,poggiolini2014applications,carena2014egn}. For wideband and ultra-wideband studies, inter-channel stimulated Raman scattering (ISRS) becomes a significant source of spectral power transfer, and ISRS-aware GN approximations have been developed to reduce the computational cost of estimating nonlinear interference in the presence of Raman tilt \cite{saavedra2018isrs,semrau2019isrsgn}.
+
+For a journal-quality modeling paper, however, implementing a physical-layer model is not sufficient. The numerical outputs must be reproducible, traceable to independent tools or measurements, and bounded by a clearly stated validity region. Open optical-network planning tools such as GNPy provide an independent reference for physical-layer quality-of-transmission estimation and route-planning studies \cite{ferrari2020gnpy,gnpyDocs}. A model-comparison workflow built around such an independent tool can reveal whether disagreement is caused by missing rows, inconsistent definitions, power-level mismatch, or systematic calibration errors.
+
+The original software project supporting this manuscript was designed for S+C+L modeling and launch-profile optimization. The present paper deliberately narrows the claim to a preliminary C-band external-validation workflow because the current evidence package contains clean GNPy references only in the C band. This reduced scope is scientifically important: it prevents a broad but unsupported S+C+L validation claim and instead provides a defensible validation unit that can be extended later to S and L bands, split-step simulation, or experimental measurements.
+
+The main contributions are as follows:
+\begin{enumerate}
+    \item A reproducible external-validation schema for comparing model GSNR values against independent GNPy references with explicit units, span counts, wavelengths, launch strategies, source identifiers, and provenance.
+    \item A clean C-band validation set containing nine GNPy reference points over three wavelengths and three span counts.
+    \item A diagnostic analysis separating raw model error, global bias, and wavelength-dependent residual trends.
+    \item A Q3-oriented manuscript and evidence structure that reports the current result honestly as preliminary C-band validation rather than final S+C+L validation.
+\end{enumerate}
+
+\section{Background and Motivation}
+\subsection{GSNR Modeling in Coherent Optical Systems}
+For an optical channel, the generalized signal-to-noise ratio is commonly expressed as
+\begin{equation}
+\mathrm{GSNR}_{\mathrm{dB}} = 10\log_{10}\left(\frac{P_{\mathrm{ch}}}{P_{\mathrm{ASE}} + P_{\mathrm{NLI}}}\right),
+\label{eq:gsnr}
+\end{equation}
+where $P_{\mathrm{ch}}$ is the channel launch or received signal power under the adopted convention, $P_{\mathrm{ASE}}$ is amplified spontaneous emission noise, and $P_{\mathrm{NLI}}$ is nonlinear interference noise. In a multi-span link, both ASE and nonlinear noise accumulation depend on amplifier configuration, span loss, dispersion, effective length, channel loading, and wavelength-dependent effects. In wideband systems, the channel power profile is additionally affected by ISRS, which redistributes optical power from shorter wavelengths toward longer wavelengths and thereby changes the nonlinear-noise profile.
+
+\subsection{Why Independent External Validation is Needed}
+Internal consistency tests and unit tests can verify software behavior, but they cannot establish agreement with an independent physical-layer calculation. For this reason, the workflow in this paper treats GNPy as an external reference engine. The role of GNPy is not to prove that the model is universally correct, but to provide a reproducible benchmark against which disagreements can be quantified. Because the present validation data are generated only for the C band and one launch strategy, the conclusions are limited to that scope.
+
+\section{Reproducible Validation Workflow}
+\subsection{Reference Dataset Construction}
+The clean external-validation file contains nine GNPy-derived GSNR reference rows. The validation dimensions are:
+\begin{itemize}
+    \item wavelengths: \SIlist{1535;1550;1560}{\nano\meter};
+    \item span counts: 1, 4, and 8;
+    \item launch strategy: flat;
+    \item metric: GSNR in dB;
+    \item source type: GNPy.
+\end{itemize}
+Rows with inconsistent wavelength matching, non-comparable channel powers, missing metadata, duplicate identities, or placeholder provenance are excluded. This filtering is necessary because external validation is meaningful only when both tools represent the same physical operating point.
+
+\subsection{Row Matching and Residual Definition}
+For each external row, the workflow selects model rows with the same launch strategy and span count. The wavelength match is then performed using a nearest-neighbor tolerance or interpolation. The residual is defined as
+\begin{equation}
+ r_i = \widehat{g}_i - g_i,
+\end{equation}
+where $\widehat{g}_i$ is the model GSNR and $g_i$ is the GNPy reference GSNR for row $i$. A negative residual therefore means that the model predicts a lower GSNR than GNPy.
+
+The reported error metrics are
+\begin{align}
+\mathrm{RMSE} &= \sqrt{\frac{1}{N}\sum_{i=1}^{N} r_i^2},\\
+\mathrm{MAE} &= \frac{1}{N}\sum_{i=1}^{N}|r_i|,\\
+\mathrm{Bias} &= \frac{1}{N}\sum_{i=1}^{N}r_i.
+\end{align}
+Coverage is defined as the number of matched validation rows divided by the number of requested external rows.
+
+\subsection{Diagnostic Bias Models}
+The workflow separates raw error from systematic calibration trends. First, a global residual-offset diagnostic uses
+\begin{equation}
+\tilde{g}_i = \widehat{g}_i - \bar{r},
+\end{equation}
+where $\bar{r}$ is the mean residual. Second, a wavelength-dependent residual model is fit as
+\begin{equation}
+\hat{r}(\lambda) = a + b(\lambda - \lambda_0),
+\label{eq:wavelength_bias}
+\end{equation}
+where $\lambda_0=\SI{1550}{\nano\meter}$. The corrected diagnostic prediction is then
+\begin{equation}
+\tilde{g}_i = \widehat{g}_i - \hat{r}(\lambda_i).
+\end{equation}
+To avoid reporting only an in-sample fit, the linear wavelength diagnostic is also evaluated with leave-one-out validation.
+
+\section{Results}
+\subsection{Raw External Validation}
+The C-band external-only diagnostic matched all nine GNPy rows. The raw model comparison yielded an RMSE of \SI{1.762}{\decibel}, an MAE of \SI{1.612}{\decibel}, a bias of \SI{-1.612}{\decibel}, and a maximum absolute error of \SI{2.713}{\decibel}. Thus, the raw model is consistently pessimistic relative to GNPy over the tested C-band points.
+
+\begin{table}[!t]
+\centering
+\caption{C-band GSNR validation summary against GNPy. Residual is model GSNR minus GNPy GSNR.}
+\label{tab:summary}
+\begin{tabular}{lrrrr}
+\toprule
+Analysis & Rows & RMSE (dB) & Bias (dB) & Max $|e|$ (dB)\\
+\midrule
+Raw model & 9 & 1.762 & -1.612 & 2.713\\
+Global residual offset & 9 & 0.710 & 0.000 & 1.100\\
+Linear wavelength fit, in-sample & 9 & 0.182 & 0.000 & --\\
+Linear wavelength fit, leave-one-out & 9 & 0.228 & -0.014 & --\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Span Dependence}
+The raw bias increases modestly with span count: \SI{-1.474}{\decibel} for one span, \SI{-1.607}{\decibel} for four spans, and \SI{-1.756}{\decibel} for eight spans. This trend indicates that span-dependent accumulation may contribute to the mismatch, but the span trend is weaker than the wavelength trend reported below.
+
+\begin{table}[!t]
+\centering
+\caption{Raw residual by span count.}
+\label{tab:span}
+\begin{tabular}{rrrrr}
+\toprule
+Spans & Rows & RMSE (dB) & Bias (dB) & Max $|e|$ (dB)\\
+\midrule
+1 & 3 & 1.592 & -1.474 & 2.248\\
+4 & 3 & 1.764 & -1.607 & 2.524\\
+8 & 3 & 1.915 & -1.756 & 2.713\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Wavelength Dependence}
+The raw residual changes strongly with wavelength. The mean residual is \SI{-0.790}{\decibel} at \SI{1535}{\nano\meter}, \SI{-1.552}{\decibel} at \SI{1550}{\nano\meter}, and \SI{-2.495}{\decibel} at \SI{1560}{\nano\meter}. This monotonic trend suggests that the dominant discrepancy is wavelength-dependent rather than a purely constant noise offset.
+
+\begin{table}[!t]
+\centering
+\caption{Raw residual by wavelength.}
+\label{tab:wavelength}
+\begin{tabular}{rrrrr}
+\toprule
+Wavelength (nm) & Rows & RMSE (dB) & Bias (dB) & Max $|e|$ (dB)\\
+\midrule
+1535.000 & 3 & 0.791 & -0.790 & 0.846\\
+1550.000 & 3 & 1.557 & -1.552 & 1.711\\
+1560.000 & 3 & 2.502 & -2.495 & 2.713\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Wavelength-Bias Diagnostic}
+The fitted wavelength-dependent residual model is
+\begin{equation}
+\hat{r}(\lambda)= -1.724 - 0.0668(\lambda - 1550),
+\label{eq:fitted_bias}
+\end{equation}
+with wavelength in nm and residual in dB. The in-sample corrected RMSE is \SI{0.182}{\decibel}. More importantly, the leave-one-out corrected RMSE is \SI{0.228}{\decibel} with a residual bias of \SI{-0.014}{\decibel}. This indicates that a simple wavelength-dependent trend explains most of the disagreement between the model and GNPy in the current C-band evidence set.
+
+\section{Discussion}
+The validation results show two different conclusions depending on the level of claim. First, the raw model does not yet satisfy a strict sub-\SI{1}{\decibel} independent-validation target because it is biased low relative to GNPy. Second, the disagreement is systematic and highly explainable. The monotonic residual slope across wavelength points to wavelength-dependent assumptions, such as attenuation slope, dispersion, Raman/ISRS power transfer, or amplifier wavelength dependence. A pure global offset improves the RMSE to \SI{0.710}{\decibel}, but the stronger leave-one-out result of \SI{0.228}{\decibel} after wavelength-bias diagnostics shows that the mismatch is not random.
+
+This matters for publication strategy. A broad claim that the full S+C+L optimizer is validated would not be supported by the present evidence. A narrower claim is supportable: the project now provides a reproducible C-band GNPy-assisted validation workflow with complete row coverage and a quantified, diagnosable wavelength-dependent calibration gap. That claim is appropriate for a preliminary Q3-oriented manuscript if the limitations are stated clearly and the evidence files are included.
+
+\section{Reproducibility}
+The validation workflow is designed to be reproducible from the repository. The relevant evidence files are stored in the C-band preliminary package and include the clean external-reference CSV, row-level comparison CSV, validation-summary CSV, validation-requirements CSV, model channel sweep, bias-diagnostic reports, and wavelength-bias diagnostic tables.
+
+A typical reproduction sequence is:
+\begin{verbatim}
+python -m pip install -e .
+run_today_external_only_cband_check.bat
+run_today_cband_bias_diagnostic.bat
+run_today_cband_wavelength_bias_check.bat
+run_prepare_today_cband_paper_package.bat
+pytest -q
+\end{verbatim}
+The tests reported locally as passing before manuscript preparation. All numerical results in this manuscript should be regenerated from the CSV and JSON evidence files before submission.
+
+\section{Limitations and Future Work}
+This manuscript intentionally limits its conclusions.
+\begin{enumerate}
+    \item The external reference set contains only C-band GNPy rows. It does not validate S-band or L-band behavior.
+    \item The validation source type is GNPy only. A stronger paper should add split-step Fourier simulation, laboratory measurement, or vendor-characterized reference data.
+    \item The wavelength-dependent residual correction is diagnostic. It should not be presented as final physical calibration unless validated on held-out wavelengths generated after the calibration model is fixed.
+    \item The adaptive launch-profile optimizer is not claimed as validated in this manuscript.
+    \item The current evidence does not prove a measured amplifier noise figure, Raman gain curve, or span-loss calibration.
+\end{enumerate}
+Future work should therefore add held-out C-band points such as \SIlist{1540;1545;1555}{\nano\meter}, extend the reference set to S and L bands, and perform physical parameter calibration before repeating external validation. The most valuable next step is to validate the fitted wavelength residual trend on newly generated GNPy rows that were not used in the diagnostic fit.
+
+\section{Conclusion}
+This paper presented a reproducible GNPy-assisted external-validation workflow for ISRS-aware GSNR modeling in C-band coherent optical links. A clean nine-point reference set spanning three wavelengths and three span counts achieved complete row coverage. The raw model showed a \SI{1.762}{\decibel} RMSE and \SI{-1.612}{\decibel} bias relative to GNPy. A global residual-offset diagnostic reduced the RMSE to \SI{0.710}{\decibel}, while a wavelength-dependent residual diagnostic reduced leave-one-out RMSE to \SI{0.228}{\decibel}. These results indicate that the remaining discrepancy is systematic and wavelength-dependent. The study is therefore suitable as a preliminary C-band validation manuscript and a foundation for stronger Q3 submission work after held-out external validation and multi-source reference expansion.
+
+\section*{Data and Code Availability}
+The code, validation scripts, and evidence-package structure are maintained in the ISRS\_SCL\_Q2\_Publication\_Project repository. The manuscript should be submitted together with the clean C-band evidence package and a frozen commit hash.
+
+\section*{Conflict of Interest}
+The author declares no conflict of interest.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
