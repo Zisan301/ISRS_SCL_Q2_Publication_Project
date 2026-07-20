@@ -34,6 +34,7 @@ src/isrs_scl/validation/benchmarks.py
 src/isrs_scl/validation/calibration.py
 src/isrs_scl/validation/convergence.py
 src/isrs_scl/validation/external_validation.py
+src/isrs_scl/validation/heldout_external_validation.py
 src/isrs_scl/validation/publication_gate.py
 src/isrs_scl/validation/reproducibility.py
 src/isrs_scl/validation/uncertainty.py
@@ -52,6 +53,7 @@ tests/test_config_schema.py
 tests/test_dsp_patch.py
 tests/test_external_validation.py
 tests/test_grid_capacity.py
+tests/test_heldout_external_validation.py
 tests/test_metrics.py
 tests/test_metrics_gmi.py
 tests/test_nli.py

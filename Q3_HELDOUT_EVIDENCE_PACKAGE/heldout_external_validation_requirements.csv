@@ -1,0 +1,6 @@
+requirement,passed,observed,threshold
+no_holdout_identity_overlap,True,0.0,0.0
+holdout_minimum_coverage,True,1.0,1.0
+holdout_gsnr_rmse,True,0.3887948541602863,1.0
+holdout_gsnr_absolute_bias,True,0.21096467678177908,0.75
+calibration_loo_gsnr_rmse,True,0.46596503798033795,1.0
