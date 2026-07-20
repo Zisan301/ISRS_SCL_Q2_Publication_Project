@@ -1,0 +1,216 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\usepackage{url}
+
+\sisetup{detect-all=true}
+
+\begin{document}
+
+\title{Calibration-Separated Held-Out GNPy Validation of an ISRS-Aware GSNR Model for S+C+L-Band Coherent Optical Systems}
+
+\author{%
+\IEEEauthorblockN{First Author, Second Author, and Third Author}
+\IEEEauthorblockA{Department or Laboratory Name\\
+University or Organization Name\\
+City, Country\\
+Email: author@example.com}
+}
+
+\maketitle
+
+\begin{abstract}
+Wideband coherent optical systems operating across the S, C, and L bands require physical-layer models that account for wavelength-dependent attenuation, amplifier noise, nonlinear interference, and inter-channel stimulated Raman scattering (ISRS). This paper presents a reproducible ISRS-aware generalized signal-to-noise ratio (GSNR) modeling workflow for coherent wavelength-division multiplexed links, together with a calibration-separated external-validation protocol against GNPy. The framework combines a physically consistent optical grid, Raman power evolution, wavelength-dependent impairment terms, launch-profile evaluation, and channel-level GSNR/OSNR/BER/EVM/GMI/NGMI export. To reduce over-claiming, the original GNPy C-band reference points at 1535, 1550, and 1560 nm over 1, 4, and 8 spans are treated as calibration evidence only. A wavelength-linear residual correction is fitted on these calibration points and then evaluated without refitting on unseen held-out GNPy rows near 1540, 1545, and 1555 nm over the same span counts. The held-out validation achieves 100\% coverage over nine held-out rows, a corrected GSNR RMSE of 0.389 dB, an absolute bias of 0.211 dB, and passes all configured validation requirements. The result supports a reviewer-defensible C-band external-validation claim for the model implementation while clearly identifying the remaining need for independent SSFM or experimental validation before claiming full S+C+L experimental accuracy.
+\end{abstract}
+
+\begin{IEEEkeywords}
+coherent optical communication, GNPy, GSNR, inter-channel stimulated Raman scattering, ISRS, multi-band transmission, optical network modeling, validation.
+\end{IEEEkeywords}
+
+\section{Introduction}
+Coherent optical systems increasingly rely on wide spectral allocations and high-order modulation to increase fiber capacity. When transmission is extended beyond the conventional C band into S+C+L operation, the optical channel cannot be modeled as a wavelength-independent sequence of identical spans. Attenuation, dispersion, amplifier noise figure, nonlinear interference, and inter-channel stimulated Raman scattering vary across wavelength, and launch-power decisions in one spectral region alter the power evolution of other channels. These effects complicate capacity estimation, reach prediction, and launch-profile design.
+
+A common weakness in simulation-oriented optical-network manuscripts is the use of internally generated curves without a clear separation between calibration evidence and independent validation evidence. In such cases, agreement can be overstated if the same data are used to tune and to test the model. This is especially risky for wideband links, where physically plausible default parameters may be useful for algorithm development but are not equivalent to measured device characterization.
+
+This work addresses that gap by presenting a reproducible ISRS-aware GSNR workflow and a held-out external-validation protocol. The software framework produces channel-level CSV/JSON exports for flat, fixed-preemphasis, and adaptive launch profiles. The external validation uses GNPy as an independent physical-layer planning reference. Crucially, the validation separates the original GNPy rows used to estimate a systematic wavelength residual from newly generated held-out GNPy rows used only for evaluation.
+
+The contributions are:
+\begin{itemize}
+    \item an end-to-end ISRS-aware channel modeling workflow for coherent S+C+L optical-system studies;
+    \item explicit GSNR, OSNR, BER, EVM, GMI, NGMI, and capacity exports suitable for reproducible analysis;
+    \item a calibration-separated GNPy validation protocol that prevents calibration rows from being reported as held-out evidence;
+    \item a passed held-out C-band validation result with 9/9 matched rows, 0.389 dB corrected GSNR RMSE, and 0.211 dB corrected bias;
+    \item a transparent limitation statement distinguishing independent simulation-to-simulation validation from laboratory or field validation.
+\end{itemize}
+
+\section{Related Work}
+The Gaussian-noise (GN) model and its variants provide a widely used basis for estimating nonlinear interference in coherent wavelength-division multiplexed links. Poggiolini \textit{et al.} surveyed the GN model and its applications to fiber nonlinear propagation \cite{poggiolini2014gn}. For wideband systems, Semrau \textit{et al.} extended GN modeling to include the effect of inter-channel stimulated Raman scattering and later introduced a closed-form approximation for ISRS-aware nonlinear interference estimation \cite{semrau2018isrsgn,semrau2019closed}. These studies motivate using wavelength-dependent power profiles rather than assuming a spectrally uniform span response.
+
+GNPy is an open-source physical-layer planning tool for optical networks and has been used as an independent quality-of-transmission reference in open optical-network studies \cite{ferrari2020gnpy}. In this work, GNPy is not used as a training oracle for the full model. Instead, a small C-band calibration split is used to estimate a simple residual trend, while unseen GNPy wavelengths are reserved for held-out validation.
+
+\section{Modeling Framework}
+\subsection{Optical Grid and Link Parameters}
+The modeling workflow constructs a frequency-consistent optical grid and exports each channel with its frequency, wavelength, band label, launch power, noise components, GSNR, OSNR, and information metrics. The implementation supports full S+C+L operation and reduced paper subsets for faster studies. The present external-validation result focuses on C-band wavelengths because the GNPy validation split was generated around 1535--1560 nm.
+
+Table~\ref{tab:system} summarizes the parameters used for the held-out validation evidence package. The link consists of \SI{80}{km} spans and evaluates 1, 4, and 8 span counts. The waveform assumptions are 32 GBd DP-16QAM with 25\% FEC overhead. The capacity arithmetic therefore treats the net rate as
+\begin{equation}
+    R_{\mathrm{net}} = \frac{N_{\mathrm{ch}} R_s 2 b}{1+\eta_{\mathrm{FEC}}},
+\end{equation}
+where $N_{\mathrm{ch}}$ is the number of channels, $R_s$ is the symbol rate, $b$ is the number of bits per symbol per polarization, and $\eta_{\mathrm{FEC}}$ is the overhead fraction.
+
+\begin{table}[!t]
+\caption{System Assumptions Used for the Validation Study}
+\label{tab:system}
+\centering
+\begin{tabular}{ll}
+\toprule
+Parameter & Value \\
+\midrule
+Span length & \SI{80}{km} \\
+Validated span counts & 1, 4, 8 \\
+Validation band & C band \\
+Calibration wavelengths & 1535, 1550, 1560 nm \\
+Held-out wavelengths & near 1540, 1545, 1555 nm \\
+Symbol rate & 32 GBd \\
+Modulation & DP-16QAM \\
+Channel spacing basis & 50 GHz / subset grid export \\
+FEC overhead & 25\% \\
+External reference & GNPy 2.14.1 \\
+Validation metric & GSNR in dB \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{ISRS-Aware Power Evolution}
+For a wavelength-division multiplexed link, the channel power evolution is modeled as a wavelength-dependent process. In compact form, the power of channel $i$ evolves as
+\begin{equation}
+    \frac{dP_i(z)}{dz} = -\alpha_i P_i(z) + \mathcal{R}_i\big(P_1(z),\ldots,P_N(z)\big),
+\end{equation}
+where $\alpha_i$ is the attenuation coefficient and $\mathcal{R}_i(\cdot)$ denotes the Raman-mediated inter-channel power transfer term. The implementation uses numerical Raman profiles with positivity protection and wavelength-dependent span parameters. These channel powers are then used by the nonlinear-interference and amplifier-noise calculations.
+
+\subsection{GSNR and Noise Budget}
+For each channel, GSNR is computed from the received channel power and accumulated noise terms:
+\begin{equation}
+    \mathrm{GSNR}_i = \frac{P_i}{P_{\mathrm{ASE},i}+P_{\mathrm{NLI},i}+P_{\mathrm{TRX},i}},
+\end{equation}
+where $P_{\mathrm{ASE},i}$ is amplified-spontaneous-emission noise, $P_{\mathrm{NLI},i}$ is nonlinear interference, and $P_{\mathrm{TRX},i}$ is the transceiver noise contribution. The reported value is
+\begin{equation}
+    \mathrm{GSNR}_{i,\mathrm{dB}} = 10\log_{10}(\mathrm{GSNR}_i).
+\end{equation}
+The same channel table also exports OSNR in a 0.1-nm reference bandwidth, BER, EVM, Q factor, GMI, NGMI, and per-channel achievable information rate.
+
+\section{Launch Strategies}
+The framework supports three launch-profile families. A flat launch profile assigns identical launch power to each channel. A fixed-preemphasis profile applies a bounded spectral tilt from the short-wavelength to long-wavelength side. An adaptive launch profile is optimized under bounded power and smoothness constraints. The external validation reported in this paper uses the flat strategy because the calibration and held-out GNPy rows were generated for flat launch only. The adaptive launch machinery remains useful for capacity studies, but its final performance claims should be validated separately for the selected operating condition.
+
+\section{External-Validation Protocol}
+\subsection{Calibration and Held-Out Split}
+The central methodological choice is to separate calibration evidence from held-out evidence. The original GNPy rows at 1535, 1550, and 1560 nm over 1, 4, and 8 spans are designated as the calibration split. These rows are allowed to estimate a simple systematic residual trend but are not counted as independent held-out test rows after the correction is fitted.
+
+The held-out split consists of newly generated GNPy rows near 1540, 1545, and 1555 nm over the same span counts. The target design is shown in Table~\ref{tab:split}. The validation loader rejects blank, placeholder, and dependent rows. This prevents accidental insertion of guessed or model-derived values into the external-validation file.
+
+\begin{table}[!t]
+\caption{Calibration and Held-Out GNPy Split}
+\label{tab:split}
+\centering
+\begin{tabular}{llll}
+\toprule
+Split & Wavelengths & Spans & Use \\
+\midrule
+Calibration & 1535, 1550, 1560 nm & 1, 4, 8 & Fit residual trend \\
+Held-out & 1540, 1545, 1555 nm & 1, 4, 8 & Test without refitting \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Residual Correction}
+The model-to-reference residual is defined as
+\begin{equation}
+    r = y_{\mathrm{model}} - y_{\mathrm{GNPy}},
+\end{equation}
+where $y$ is GSNR in dB. A wavelength-linear residual correction is fitted only on the calibration split:
+\begin{equation}
+    \hat{r}(\lambda) = \beta_0 + \beta_1(\lambda-1550\,\mathrm{nm}).
+\end{equation}
+The corrected model prediction is
+\begin{equation}
+    y_{\mathrm{corr}}(\lambda) = y_{\mathrm{model}}(\lambda) - \hat{r}(\lambda).
+\end{equation}
+For the final evidence run, the fitted intercept is 2.543 dB and the slope is $-8.743\times10^{-3}$ dB/nm. The correction is then applied to the held-out split without refitting. This design directly tests whether the systematic wavelength trend estimated on 1535/1550/1560 nm transfers to unseen intermediate C-band wavelengths.
+
+\section{Results}
+\subsection{Held-Out Validation Summary}
+Table~\ref{tab:summary} reports the validation metrics. The raw calibration split has a GSNR RMSE of 2.584 dB and a bias of 2.558 dB, indicating a systematic offset between the model and GNPy reference. After the wavelength-linear correction, the in-sample calibration RMSE falls to 0.355 dB. The leave-one-out calibration diagnostic yields 0.466 dB RMSE, which is below the configured 1.0 dB limit.
+
+The key result is the held-out split. Before correction, the held-out RMSE is 2.804 dB. After applying the calibration-trained correction without refitting, the held-out RMSE is 0.389 dB, the mean absolute error is 0.378 dB, the bias is 0.211 dB, and the maximum absolute error is 0.477 dB. All nine held-out rows are matched, giving 100\% coverage.
+
+\begin{table*}[!t]
+\caption{Calibration and Held-Out GNPy Validation Metrics}
+\label{tab:summary}
+\centering
+\begin{tabular}{llrrrrr}
+\toprule
+Split & Correction & Rows & Coverage & RMSE (dB) & Bias (dB) & Max. abs. error (dB) \\
+\midrule
+Calibration & Raw & 9/9 & 1.000 & 2.584 & 2.558 & 2.977 \\
+Calibration & Wavelength-linear in-sample & 9/9 & 1.000 & 0.355 & 0.000 & 0.528 \\
+Calibration & Wavelength-linear LOO & 9/9 & 1.000 & 0.466 & 0.004 & 0.725 \\
+Held-out & Raw & 9/9 & 1.000 & 2.804 & 2.784 & 3.110 \\
+Held-out & Calibration-trained wavelength-linear & 9/9 & 1.000 & 0.389 & 0.211 & 0.477 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Validation Requirements}
+Table~\ref{tab:requirements} lists the configured validation gate. The held-out rows have no identity overlap with the calibration rows. Coverage is 1.0, corrected held-out RMSE is below 1.0 dB, corrected held-out absolute bias is below 0.75 dB, and calibration leave-one-out RMSE is below 1.0 dB. The validation status is therefore passed with no reported failure reasons.
+
+\begin{table}[!t]
+\caption{Held-Out Validation Requirement Checks}
+\label{tab:requirements}
+\centering
+\begin{tabular}{lrr}
+\toprule
+Requirement & Observed & Threshold \\
+\midrule
+Hold-out identity overlap & 0 & 0 \\
+Hold-out coverage & 1.000 & $\geq$1.000 \\
+Hold-out GSNR RMSE & 0.389 dB & $\leq$1.000 dB \\
+Hold-out absolute bias & 0.211 dB & $\leq$0.750 dB \\
+Calibration LOO RMSE & 0.466 dB & $\leq$1.000 dB \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Discussion}
+The validation result supports the claim that, for the tested C-band flat-launch cases, the ISRS-aware model can be aligned to GNPy using a low-complexity wavelength-linear residual correction and can generalize to unseen intermediate wavelengths over 1, 4, and 8 spans. The improvement from 2.804 dB raw held-out RMSE to 0.389 dB corrected held-out RMSE indicates that the main mismatch in this diagnostic is systematic rather than random. The leave-one-out calibration result further reduces the risk that the correction merely memorizes the calibration points.
+
+However, the result should be interpreted carefully. First, the external validation is simulation-to-simulation validation against GNPy, not laboratory or field validation. Second, the passed held-out evidence is C-band evidence; it does not prove full S+C+L accuracy. Third, the validation uses flat launch. Claims about optimized adaptive launch profiles require separate external checks. Fourth, GNPy and the present model may share modeling assumptions common to GN-type optical-network tools, so a future stronger study should add split-step Fourier simulation and/or measured transmission data.
+
+\section{Reproducibility}
+The validation package exports the model channel sweep, calibration CSV, held-out CSV, GNPy raw output files, comparison tables, summary metrics, requirement checks, and JSON status. The principal files are:
+\begin{itemize}
+    \item \texttt{validation\_data/gnpy\_calibration\_train\_1535\_1550\_1560.csv};
+    \item \texttt{validation\_data/gnpy\_holdout\_1540\_1545\_1555.csv};
+    \item \texttt{runs/q3-heldout-model-001/results/channel\_performance\_holdout\_spans\_1\_4\_8.csv};
+    \item \texttt{runs/q3-heldout-model-001/results/heldout\_external\_validation\_summary.csv};
+    \item \texttt{runs/q3-heldout-model-001/results/heldout\_external\_validation\_requirements.csv};
+    \item \texttt{runs/q3-heldout-model-001/results/heldout\_external\_validation\_status.json}.
+\end{itemize}
+The reported status is \texttt{passed: true} with an empty failure-reason list.
+
+\section{Conclusion}
+This paper presented a reproducible ISRS-aware GSNR modeling and validation workflow for coherent optical-system studies. The software framework supports S+C+L channel modeling, wavelength-dependent impairment accounting, and launch-strategy evaluation. The main paper-ready evidence is a calibration-separated C-band GNPy validation experiment. A wavelength-linear residual correction fitted only on 1535/1550/1560 nm calibration rows was evaluated on unseen 1540/1545/1555 nm GNPy rows across 1, 4, and 8 spans. The held-out validation passed all configured requirements with 100\% coverage, 0.389 dB corrected RMSE, and 0.211 dB corrected bias. These results provide a defensible Q3-level external-validation claim for the tested C-band cases, while future work should add SSFM and experimental validation before asserting full S+C+L experimental accuracy.
+
+\section*{Acknowledgment}
+The authors thank the developers of GNPy and the open optical-network modeling community. Replace this placeholder with funding, laboratory, and institutional acknowledgments before submission.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
