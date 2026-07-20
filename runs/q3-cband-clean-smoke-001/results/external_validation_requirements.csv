@@ -1,0 +1,11 @@
+requirement,passed,evidence
+minimum_overall_coverage,False,0.2222222222222222
+minimum_sources,True,9.0
+minimum_source_types,False,1.0
+minimum_span_counts,True,3.0
+minimum_wavelengths_S,False,0.0
+minimum_wavelengths_C,True,3.0
+minimum_wavelengths_L,False,0.0
+metric_present_gsnr_db,True,1.0
+gsnr_rmse,True,0.6412189757388859
+gsnr_bias,True,0.6308970462250834

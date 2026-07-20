@@ -1,0 +1,2 @@
+[console_scripts]
+isrs-scl-study = isrs_scl.cli:main
