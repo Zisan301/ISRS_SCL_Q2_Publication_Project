@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+gnpy_env/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# LaTeX generated files
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# Temporary cleanup scripts
+cleanup_journal_repo.py
+*.tmp
+*.bak
+
+# Large generated runtime outputs
+runs/
+results/
+
+# Obsolete preliminary package
+paper_package_cband_preliminary_20260720/
