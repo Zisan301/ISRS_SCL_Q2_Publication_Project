@@ -1,5 +1,0 @@
-analysis,rmse_db,bias_db,max_abs_error_db,note
-Raw model vs GNPy,1.761891849306184,-1.612370721434968,2.7127300926392977,Uncalibrated comparison
-Global offset diagnostic,0.7102982087200039,-7.894919286223335e-16,1.1003593712043305,Single constant residual offset
-"Linear wavelength diagnostic, in-sample",0.1820759978234323,1.1842378929335002e-15,0.3276829664748817,Residual fitted versus wavelength
-"Linear wavelength diagnostic, leave-one-out",0.22820745820814706,-0.014085377521909316,0.43015492261192634,Cross-validated diagnostic
